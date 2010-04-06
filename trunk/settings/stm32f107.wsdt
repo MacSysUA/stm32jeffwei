@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>stm32f107/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>191</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>26</ColumnWidth0><ColumnWidth1>1031</ColumnWidth1><ColumnWidth2>275</ColumnWidth2><ColumnWidth3>68</ColumnWidth3></Build>
+    <TerminalIO/><Debug-Log><ColumnWidth0>27</ColumnWidth0><ColumnWidth1>1374</ColumnWidth1></Debug-Log></Static>
+    <Windows>
+      
+      
+    <Wnd2>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-29237-25027</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>stm32f107</ExpandedNode><ExpandedNode>stm32f107/LCD</ExpandedNode><ExpandedNode>stm32f107/Output</ExpandedNode><ExpandedNode>stm32f107/SD</ExpandedNode><ExpandedNode>stm32f107/SD_Driver</ExpandedNode><ExpandedNode>stm32f107/fat_sd</ExpandedNode><ExpandedNode>stm32f107/uCGUI</ExpandedNode><ExpandedNode>stm32f107/uCGUI/GUI</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-5106-28345</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-30052-20232</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\LCD_driver\touch.h</Filename><XPos>0</XPos><YPos>6</YPos><SelStart>427</SelStart><SelEnd>434</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\LCD_driver\touch.c</Filename><XPos>0</XPos><YPos>15</YPos><SelStart>1100</SelStart><SelEnd>1100</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\User\main.c</Filename><XPos>0</XPos><YPos>59</YPos><SelStart>1784</SelStart><SelEnd>1784</SelEnd></Tab><ActiveTab>2</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</Filename><XPos>0</XPos><YPos>234</YPos><SelStart>11763</SelStart><SelEnd>11777</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\LCD_driver\ili9320.h</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1308</SelStart><SelEnd>1308</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</Filename><XPos>0</XPos><YPos>677</YPos><SelStart>28750</SelStart><SelEnd>28763</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\FATFS\diskio.c</Filename><XPos>0</XPos><YPos>122</YPos><SelStart>3587</SelStart><SelEnd>3587</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\USART_printp.c</Filename><XPos>0</XPos><YPos>70</YPos><SelStart>3111</SelStart><SelEnd>3114</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\SPI_SD_driver.c</Filename><XPos>0</XPos><YPos>86</YPos><SelStart>4077</SelStart><SelEnd>4080</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\FATFS\ff.c</Filename><XPos>0</XPos><YPos>69</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\RTC_Time.c</Filename><XPos>0</XPos><YPos>75</YPos><SelStart>2852</SelStart><SelEnd>2852</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\SPI_SD_driver.h</Filename><XPos>0</XPos><YPos>39</YPos><SelStart>1665</SelStart><SelEnd>1665</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\SD\FATFS\diskio.h</Filename><XPos>0</XPos><YPos>45</YPos><SelStart>380</SelStart><SelEnd>380</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\User\stm32f10x_conf.h</Filename><XPos>0</XPos><YPos>31</YPos><SelStart>1447</SelStart><SelEnd>1447</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\LCD_driver\ili9320.c</Filename><XPos>0</XPos><YPos>729</YPos><SelStart>27582</SelStart><SelEnd>27582</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-00b09178><key>iaridepm.enu1</key></Toolbar-00b09178></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>537</Bottom><Right>265</Right><x>-2</x><y>-2</y><xscreen>21</xscreen><yscreen>0</yscreen><sizeHorzCX>14583</sizeHorzCX><sizeHorzCY>0</sizeHorzCY><sizeVertCX>185417</sizeVertCX><sizeVertCY>654126</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>242</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>244</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>296117</sizeHorzCY><sizeVertCX>14583</sizeVertCX><sizeVertCY>0</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
