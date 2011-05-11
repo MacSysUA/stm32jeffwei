@@ -24,7 +24,7 @@
     <Windows>
       
       
-    <Wnd0>
+    <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-29754-25319</Identity>
@@ -34,7 +34,7 @@
           </Tab>
         <Tab><Identity>TabID-31350-2533</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-7735-25323</Identity>
@@ -46,20 +46,20 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\main.c</Filename><XPos>0</XPos><YPos>128</YPos><SelStart>3467</SelStart><SelEnd>3467</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</Filename><XPos>0</XPos><YPos>632</YPos><SelStart>27066</SelStart><SelEnd>27077</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</Filename><XPos>0</XPos><YPos>287</YPos><SelStart>9635</SelStart><SelEnd>9646</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</Filename><XPos>0</XPos><YPos>507</YPos><SelStart>37730</SelStart><SelEnd>37730</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\STM3210E_EVAL\stm3210e_eval_lcd.c</Filename><XPos>0</XPos><YPos>391</YPos><SelStart>15454</SelStart><SelEnd>15454</SelEnd></Tab><ActiveTab>4</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\STM3210E_EVAL\stm3210e_eval_lcd.h</Filename><XPos>0</XPos><YPos>63</YPos><SelStart>8918</SelStart><SelEnd>8931</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\main.c</Filename><XPos>0</XPos><YPos>120</YPos><SelStart>3467</SelStart><SelEnd>3467</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</Filename><XPos>0</XPos><YPos>632</YPos><SelStart>27066</SelStart><SelEnd>27077</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</Filename><XPos>0</XPos><YPos>287</YPos><SelStart>9635</SelStart><SelEnd>9646</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</Filename><XPos>0</XPos><YPos>507</YPos><SelStart>37730</SelStart><SelEnd>37730</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\STM3210E_EVAL\stm3210e_eval_lcd.c</Filename><XPos>0</XPos><YPos>405</YPos><SelStart>15453</SelStart><SelEnd>15453</SelEnd></Tab><ActiveTab>4</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\STM3210E_EVAL\stm3210e_eval_lcd.h</Filename><XPos>0</XPos><YPos>273</YPos><SelStart>8918</SelStart><SelEnd>8931</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-00b08d00><key>iaridepm.enu1</key></Toolbar-00b08d00></Sizes></Row0></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>581</Bottom><Right>373</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>138889</sizeHorzCX><sizeHorzCY>242718</sizeHorzCY><sizeVertCX>260417</sizeVertCX><sizeVertCY>707524</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>200</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>242718</sizeHorzCY><sizeVertCX>138889</sizeVertCX><sizeVertCY>242718</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-00b8a948><key>iaridepm.enu1</key></Toolbar-00b8a948></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>581</Bottom><Right>373</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>138889</sizeHorzCX><sizeHorzCY>242718</sizeHorzCY><sizeVertCX>260417</sizeVertCX><sizeVertCY>707524</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>200</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>242718</sizeHorzCY><sizeVertCX>138889</sizeVertCX><sizeVertCY>242718</sizeVertCY></Rect></Wnd2></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

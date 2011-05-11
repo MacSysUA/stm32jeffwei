@@ -328,6 +328,18 @@ void LCD_DisplayOff(void);
   */ 
 void LCD_CtrlLinesConfig(void);
 void LCD_FSMCConfig(void);
+
+
+
+
+void draw_line(void);
+
+
+
+
+
+
+
 /**
   * @}
   */

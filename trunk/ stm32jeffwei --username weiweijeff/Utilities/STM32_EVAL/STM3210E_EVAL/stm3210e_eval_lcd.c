@@ -421,7 +421,7 @@ void LCD_Clear(uint16_t Color)
   */
 void LCD_SetCursor(uint8_t Xpos, uint16_t Ypos)
 {
-  LCD_WriteReg(LCD_REG_32, 239-Xpos);
+  LCD_WriteReg(LCD_REG_32, Xpos);
   LCD_WriteReg(LCD_REG_33, Ypos);
 }
 

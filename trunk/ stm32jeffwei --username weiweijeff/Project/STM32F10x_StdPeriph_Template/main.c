@@ -136,8 +136,8 @@ int main(void)
   SetSysClockTo72();
   LCD_DeInit();
   STM3210E_LCD_Init();
-  LCD_Clear(LCD_COLOR_BLACK);
-  LCD_DisplayStringLine( 5,  "hello");
+  LCD_Clear(LCD_COLOR_BLUE);
+  draw_line();
   USART1_Init();
   
   /* GPIOF Periph clock enable */
