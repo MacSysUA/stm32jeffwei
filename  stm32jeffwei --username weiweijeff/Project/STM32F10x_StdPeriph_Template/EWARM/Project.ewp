@@ -289,6 +289,7 @@
           <state>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL</state>
           <state>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL\Common</state>
           <state>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL\STM3210E_EVAL</state>
+          <state>$PROJ_DIR$\..\..\..\ff8b</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -4840,6 +4841,15 @@
     </file>
   </group>
   <group>
+    <name>ff8b</name>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\ff8b\diskio.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\ff8b\ff.c</name>
+    </file>
+  </group>
+  <group>
     <name>StdPeriph_Driver</name>
     <file>
       <name>$PROJ_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\misc.c</name>
@@ -4972,7 +4982,13 @@
   <group>
     <name>User</name>
     <file>
+      <name>$PROJ_DIR$\..\fatfs.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\RTC_Time.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\stm32f10x_it.c</name>
