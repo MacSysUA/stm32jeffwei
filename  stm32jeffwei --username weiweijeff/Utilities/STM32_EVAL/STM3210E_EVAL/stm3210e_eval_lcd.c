@@ -437,10 +437,12 @@ void LCD_DrawChar(uint8_t Xpos, uint16_t Ypos, const uint16_t *c)
 {
   uint32_t index = 0, i = 0;
   uint8_t Xaddress = 0;
+  uint16_t Yaddress = 0;
    
-  Xaddress = Xpos;
+  Xaddress = Xpos+1;
+  Yaddress = Ypos+LCD_Currentfonts->Width;
   
-  LCD_SetCursor(Xaddress, Ypos);
+  LCD_SetCursor(Xaddress, Yaddress);
   
   for(index = 0; index < LCD_Currentfonts->Height; index++)
   {
@@ -459,7 +461,7 @@ void LCD_DrawChar(uint8_t Xpos, uint16_t Ypos, const uint16_t *c)
       }
     }
     Xaddress++;
-    LCD_SetCursor(Xaddress, Ypos);
+    LCD_SetCursor(Xaddress, Yaddress);
   }
 }
 

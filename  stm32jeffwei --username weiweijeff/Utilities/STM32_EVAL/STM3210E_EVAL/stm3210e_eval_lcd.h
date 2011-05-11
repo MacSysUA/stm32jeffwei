@@ -332,9 +332,6 @@ void LCD_FSMCConfig(void);
 
 
 
-void draw_line(void);
-
-
 
 
 
