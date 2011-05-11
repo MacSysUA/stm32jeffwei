@@ -137,7 +137,9 @@ int main(void)
   LCD_DeInit();
   STM3210E_LCD_Init();
   LCD_Clear(LCD_COLOR_BLUE);
-  draw_line();
+  LCD_DrawLine( 100,  150,  10,  LCD_DIR_HORIZONTAL);
+  LCD_DisplayChar(0,0,'F');
+  LCD_DisplayStringLine(200,"hello");
   USART1_Init();
   
   /* GPIOF Periph clock enable */
