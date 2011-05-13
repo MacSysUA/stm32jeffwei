@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>STM32100B-EVAL\Exe</state>
+          <state>STM3210E-EVAL\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>STM32100B-EVAL\Obj</state>
+          <state>STM3210E-EVAL\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>STM32100B-EVAL\List</state>
+          <state>STM3210E-EVAL\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -4986,6 +4986,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\queue.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\RTC_Time.c</name>

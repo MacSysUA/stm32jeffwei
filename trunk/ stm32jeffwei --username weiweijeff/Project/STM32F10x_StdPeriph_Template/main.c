@@ -40,7 +40,7 @@ uint8_t rx_buffer2=0;
 
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
-
+void NVIC_Configuration(void);
 void SetSysClockTo72(void);
 
 void USART1_Init();
@@ -85,10 +85,11 @@ int main(void)
      */     
        
   SetSysClockTo72();
+  NVIC_Configuration();
   USART1_Init();
   USART2_Init();
-  get_disk_info();
- list_file();
+//  get_disk_info();
+//  list_file();
   
   LCD_DeInit();
   STM3210E_LCD_Init();
@@ -446,8 +447,7 @@ void USART2_IRQHandler(void)
   */
 void USART1_IRQHandler(void)
 {
-  if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-  {
-    USART_SendData(USART2, USART_ReceiveData(USART1));
-  }
+  USART_SendData(USART2, USART_ReceiveData(USART1));
+  while(USART_GetITStatus(USART1, USART_IT_TC)!=1);
+  USART_ClearITPendingBit(USART1,USART_IT_RXNE);    
 }
