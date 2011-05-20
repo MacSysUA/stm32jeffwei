@@ -4846,7 +4846,13 @@
       <name>$PROJ_DIR$\..\..\..\ff8b\diskio.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\ff8b\fatfs.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\ff8b\ff.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\ff8b\sdcard.c</name>
     </file>
   </group>
   <group>
@@ -4967,6 +4973,7 @@
     <file>
       <name>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_sdio_sd.c</name>
       <excluded>
+        <configuration>STM32100B-EVAL</configuration>
         <configuration>STM3210C-EVAL</configuration>
         <configuration>STM3210B-EVAL</configuration>
         <configuration>STM32100E-EVAL</configuration>
@@ -4981,9 +4988,6 @@
   </group>
   <group>
     <name>User</name>
-    <file>
-      <name>$PROJ_DIR$\..\fatfs.c</name>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>

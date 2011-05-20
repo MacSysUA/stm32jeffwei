@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    GPIO/IOToggle/system_stm32f10x.c
+  * @file    SDIO/uSDCard/system_stm32f10x.c
   * @author  MCD Application Team
   * @version V3.5.0
   * @date    08-April-2011

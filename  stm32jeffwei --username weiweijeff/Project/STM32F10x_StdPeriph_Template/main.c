@@ -25,12 +25,22 @@
 #include <stdio.h>
 #include "stm3210e_eval_lcd.h"
 #include "fatfs.h"
+
+#include <assert.h>
+#include "queue.h"
+#include "stm32_eval_sdio_sd.h"
+
 /**
   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
   * @param  None
   * @retval None
   */
+
+uint8_t readbuff[600];
+SD_Error sd_flag;
+
+
 uint8_t rx_buffer1=0;
 uint8_t rx_buffer2=0;
 #define USART1_Tx_DMA_Channel DMA1_Channel4
@@ -74,7 +84,7 @@ void delay(void)//延时函数，流水灯显示用
   * @retval None
   */
 
-
+SD_CardStatus cardstatus;
 int main(void)
 {
   /*!< At this stage the microcontroller clock setting is already configured, 
@@ -88,8 +98,38 @@ int main(void)
   NVIC_Configuration();
   USART1_Init();
   USART2_Init();
-//  get_disk_info();
+  get_disk_info();
+  
+
+  sd_flag = SD_Init();
+//  printf("\n\r--%u--\n\r",sd_flag);
+//  Status = SD_GetCardInfo(&SDCardInfo);
+//  Status = SD_SelectDeselect((u32) (SDCardInfo.RCA << 16));
+//  Status = SD_EnableWideBusOperation(SDIO_BusWide_4b);
+#if 0  
+    NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+  NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  sd_flag=SD_GetCardStatus(&cardstatus);
+  printf("\n\r--%u--\n\r",cardstatus.DAT_BUS_WIDTH);
+  printf("\n\r--%u--\n\r",cardstatus.SECURED_MODE);
+  printf("\n\r--%u--\n\r",cardstatus.SD_CARD_TYPE);
+  printf("\n\r--%u--\n\r",cardstatus.SIZE_OF_PROTECTED_AREA);
+  printf("\n\r--%u--\n\r",cardstatus.SPEED_CLASS);
+  printf("\n\r--%u--\n\r",cardstatus.PERFORMANCE_MOVE);
+  printf("\n\r--%u--\n\r",cardstatus.AU_SIZE);
+  printf("\n\r--%u--\n\r",cardstatus.ERASE_SIZE);
+  printf("\n\r--%u--\n\r",cardstatus.ERASE_TIMEOUT);
+  printf("\n\r--%u--\n\r",cardstatus.ERASE_OFFSET);
+  
+#endif  
 //  list_file();
+//  sd_flag=SD_ReadBlock(readbuff, 512, 512);
+//  printf("\n\r--%u--\n\r",sd_flag);
   
   LCD_DeInit();
   STM3210E_LCD_Init();
