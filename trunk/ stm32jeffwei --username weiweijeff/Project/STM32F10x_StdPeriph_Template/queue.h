@@ -9,7 +9,7 @@
 
 void insert_one(QUEUE_TYPE value);
 
-void delete_one();
+void delete_one(void);
 
 QUEUE_TYPE first(void);
 

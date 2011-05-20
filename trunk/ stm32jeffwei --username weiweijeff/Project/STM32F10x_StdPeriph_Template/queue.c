@@ -18,7 +18,7 @@ void insert_one(QUEUE_TYPE value)
 }
 
 
-void delete_one()
+void delete_one(void)
 {
   assert(!is_empty());
   front=(front+1)%ARRAY_SIZE;
@@ -33,10 +33,10 @@ QUEUE_TYPE first(void)
 
 uint8_t is_empty(void)
 {
-  return rear=(rear+1)%ARRAY_SIZE==front;
+  return (rear+1)%ARRAY_SIZE==front;
 }
 
 uint8_t is_full(void)
 {
-  return rear=(rear+2)%ARRAY_SIZE==front;
+  return (rear+2)%ARRAY_SIZE==front;
 }
