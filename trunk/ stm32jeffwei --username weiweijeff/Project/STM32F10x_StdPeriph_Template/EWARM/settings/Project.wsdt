@@ -11,55 +11,33 @@
         
         
         
-      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1035</ColumnWidth1><ColumnWidth2>276</ColumnWidth2><ColumnWidth3>69</ColumnWidth3></Build>
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window></Windows></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1035</ColumnWidth1><ColumnWidth2>276</ColumnWidth2><ColumnWidth3>69</ColumnWidth3></Build>
       <Workspace>
         <ColumnWidths>
           
           
           
           
-        <Column0>300</Column0><Column1>4</Column1><Column2>27</Column2><Column3>1307796</Column3></ColumnWidths>
-      </Workspace>
-    <TerminalIO/><Debug-Log><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1381</ColumnWidth1></Debug-Log><Disassembly><MixedMode>1</MixedMode><CodeCovShow>0</CodeCovShow><InstrProfShow>0</InstrProfShow></Disassembly></Static>
+        <Column0>256</Column0><Column1>4</Column1><Column2>27</Column2><Column3>1307796</Column3></ColumnWidths>
+      <PreferedWindows><Position>0</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Workspace>
+    <TerminalIO/><Debug-Log><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1381</ColumnWidth1><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Build</Factory></Window></Windows></PreferedWindows></Debug-Log><Disassembly><MixedMode>1</MixedMode><CodeCovShow>0</CodeCovShow><InstrProfShow>0</InstrProfShow></Disassembly><SourceBrowser><PreferedWindows><Position>4</Position><ScreenPosX>8</ScreenPosX><ScreenPosY>120</ScreenPosY><Windows><Window><Factory>Workspace</Factory></Window></Windows></PreferedWindows></SourceBrowser></Static>
     <Windows>
       
       
-    <Wnd0>
-        <Tabs>
-          <Tab>
-            <Identity>TabID-29754-25319</Identity>
-            <TabName>Build</TabName>
-            <Factory>Build</Factory>
-            <Session/>
-          </Tab>
-        <Tab><Identity>TabID-31350-2533</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
-        
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
-        <Tabs>
-          <Tab>
-            <Identity>TabID-7735-25323</Identity>
-            <TabName>Workspace</TabName>
-            <Factory>Workspace</Factory>
-            <Session>
-              
-            <NodeDict><ExpandedNode>Project</ExpandedNode><ExpandedNode>Project/ff8b</ExpandedNode></NodeDict></Session>
-          </Tab>
-        </Tabs>
-        
-      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Wnd0><Tabs><Tab><Identity>TabID-12966-8922</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-7738-9020</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>Project</ExpandedNode><ExpandedNode>Project/User</ExpandedNode><ExpandedNode>Project/ff8b</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd1></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\ffconf.h</Filename><XPos>0</XPos><YPos>147</YPos><SelStart>2135</SelStart><SelEnd>2135</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</Filename><XPos>0</XPos><YPos>1025</YPos><SelStart>30808</SelStart><SelEnd>30808</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\diskio.c</Filename><XPos>0</XPos><YPos>13</YPos><SelStart>1205</SelStart><SelEnd>1205</SelEnd></Tab><ActiveTab>2</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\queue.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>502</SelStart><SelEnd>502</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_sdio_sd.c</Filename><XPos>0</XPos><YPos>300</YPos><SelStart>15416</SelStart><SelEnd>15427</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\main.c</Filename><XPos>0</XPos><YPos>81</YPos><SelStart>3042</SelStart><SelEnd>3042</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_sdio_sd.h</Filename><XPos>0</XPos><YPos>49</YPos><SelStart>2263</SelStart><SelEnd>2282</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\fatfs.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1594</SelStart><SelEnd>1601</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\ff.c</Filename><XPos>0</XPos><YPos>2112</YPos><SelStart>78642</SelStart><SelEnd>78651</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</Filename><XPos>0</XPos><YPos>665</YPos><SelStart>22974</SelStart><SelEnd>22974</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h</Filename><XPos>0</XPos><YPos>465</YPos><SelStart>19667</SelStart><SelEnd>19678</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\stm3210e_eval\stm3210e_eval.c</Filename><XPos>0</XPos><YPos>248</YPos><SelStart>13722</SelStart><SelEnd>13738</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\sdcard.h</Filename><XPos>0</XPos><YPos>56</YPos><SelStart>4469</SelStart><SelEnd>4477</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\sdcard.c</Filename><XPos>0</XPos><YPos>418</YPos><SelStart>16649</SelStart><SelEnd>16657</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\main.c</Filename><XPos>0</XPos><YPos>66</YPos><SelStart>2500</SelStart><SelEnd>2500</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\fatfs.c</Filename><XPos>0</XPos><YPos>159</YPos><SelStart>2732</SelStart><SelEnd>2732</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\fatfs.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>177</SelStart><SelEnd>177</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\ff.c</Filename><XPos>0</XPos><YPos>2812</YPos><SelStart>100287</SelStart><SelEnd>100296</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\integer.h</Filename><XPos>0</XPos><YPos>16</YPos><SelStart>796</SelStart><SelEnd>801</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\sdcard.c</Filename><XPos>0</XPos><YPos>415</YPos><SelStart>16508</SelStart><SelEnd>16508</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\diskio.c</Filename><XPos>0</XPos><YPos>54</YPos><SelStart>2383</SelStart><SelEnd>2383</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_sdio_sd.c</Filename><XPos>0</XPos><YPos>1247</YPos><SelStart>43807</SelStart><SelEnd>45745</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\ff8b\sdcard.h</Filename><XPos>0</XPos><YPos>237</YPos><SelStart>12708</SelStart><SelEnd>12719</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_sdio_sd.h</Filename><XPos>0</XPos><YPos>296</YPos><SelStart>15247</SelStart><SelEnd>15258</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-00b08d00><key>iaridepm.enu1</key></Toolbar-00b08d00></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>614</Bottom><Right>351</Right><x>-2</x><y>-2</y><xscreen>482</xscreen><yscreen>443</yscreen><sizeHorzCX>334722</sizeHorzCX><sizeHorzCY>537621</sizeHorzCY><sizeVertCX>245139</sizeVertCX><sizeVertCY>747573</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>165</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>167</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>202670</sizeHorzCY><sizeVertCX>334722</sizeVertCX><sizeVertCY>537621</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-00b08d00><key>iaridepm.enu1</key></Toolbar-00b08d00></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>581</Bottom><Right>307</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>200</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>242718</sizeHorzCY><sizeVertCX>214583</sizeVertCX><sizeVertCY>707524</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>200</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>242718</sizeHorzCY><sizeVertCX>138889</sizeVertCX><sizeVertCY>242718</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 
