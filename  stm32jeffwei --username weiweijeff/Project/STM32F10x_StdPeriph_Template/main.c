@@ -80,7 +80,7 @@ void delay(void)//延时函数，流水灯显示用
   * @param  None
   * @retval None
   */
-
+char *str;
 int main(void)
 {
   /*!< At this stage the microcontroller clock setting is already configured, 
@@ -103,7 +103,10 @@ int main(void)
 //  Status = SD_SelectDeselect((u32) (SDCardInfo.RCA << 16));
 //  Status = SD_EnableWideBusOperation(SDIO_BusWide_4b);
   list_file();
+  str=read_file("/","test.txt",0,32);
+  printf(str);
 //  printf("\n\r--%u--\n\r",sd_flag);
+  
   
   LCD_DeInit();
   STM3210E_LCD_Init();
