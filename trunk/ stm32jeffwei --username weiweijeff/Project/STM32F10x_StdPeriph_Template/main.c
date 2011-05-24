@@ -95,17 +95,27 @@ int main(void)
   USART1_Init();
   USART2_Init();
   get_disk_info();
-  
 
 
-//  printf("\n\r--%u--\n\r",sd_flag);
-//  Status = SD_GetCardInfo(&SDCardInfo);
-//  Status = SD_SelectDeselect((u32) (SDCardInfo.RCA << 16));
-//  Status = SD_EnableWideBusOperation(SDIO_BusWide_4b);
+
+#if 1
   list_file();
-  str=read_file("/","test.txt",0,32);
+//  str=read_file("/","test.txt",0,32);
+  printf("\n\r");
+//  printf(str);
+//  delete_file("hello.txt");
+//  creat_file("hello.txt");  
+//  delete_file("/","hello.txt");
+  creat_file("hello.txt");
+//  delay();
+  edit_file("/","hello.txt","creat_file is ok!",0x00);
+  str=read_file("/","hello.txt",0,32);
+  printf("\n\r");
   printf(str);
-//  printf("\n\r--%u--\n\r",sd_flag);
+  
+#endif
+  printf("\n\r");
+  list_file();
   
   
   LCD_DeInit();
@@ -340,6 +350,7 @@ void USART1_Init()
 
   /* Enable USART */
   USART_Cmd(USART1, ENABLE);
+  USART_GetITStatus( USART1,  USART_IT_TC);
 }
 
 void USART2_Init()
@@ -389,6 +400,7 @@ void USART2_Init()
 
   /* Enable USART */
   USART_Cmd(USART2, ENABLE);
+  USART_GetITStatus( USART2,  USART_IT_TC);
 }
 
 /**
