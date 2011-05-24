@@ -99,7 +99,7 @@ void get_disk_info(void)
 	DWORD clust,tot_sect,fre_sect;	
 	
 	res = f_mount(0,&fs);
-        printf("f_mount---%u---",res);
+//        printf("f_mount---%u---",res);
 	if (res != FR_OK)
 	{
 		printf("\r\n挂载文件系统失败,错误代码: %u",res);
@@ -170,8 +170,8 @@ char *read_file(const TCHAR *dir,const TCHAR *file_name,int offset,int length)
   FATFS fs;
   FIL	file;
   FRESULT res;
-  DIR dirs;
-  FILINFO finfo;
+//  DIR dirs;
+//  FILINFO finfo;
   uint32_t re;
   res = f_mount(0,&fs);
   res = f_chdir(dir);
@@ -218,39 +218,6 @@ void creat_file(const TCHAR *file_name)
 	f_mount(0,NULL);
 }
 
-void delete_file(const TCHAR *file_name)
-{
-	FATFS fs;
-//	FATFS *fls = &fs;
-	FRESULT res;
-	res = f_mount(0,&fs);
-	if (res != FR_OK)
-	{
-		printf("\r\n挂载文件系统失败,错误代码: %u",res);
-		return;
-	}	
-	res = f_unlink((TCHAR *)file_name);
-
-	if (res == FR_OK)
-	{
-		printf("\r\n删除文件成功!");
-	}
-	else if (res == FR_NO_FILE)
-	{
-		printf("\r\n找不到文件或目录!");
-	}
-	else if (res == FR_NO_PATH)
-	{
-		printf("\r\n找不到路径!");
-	}
-	else
-	{
-		printf("\r\n错误代码: %u",res);
-	}
-	f_mount(0,NULL);
-}
-
-
 void creat_dir(const TCHAR *dir_name)
 {
 	FATFS fs;
@@ -275,15 +242,29 @@ void creat_dir(const TCHAR *dir_name)
 }
 
 
+void delete_file(const TCHAR *dir, const TCHAR *file_name)
+{
+	FATFS fs;
+        DIR dirs;
+	FRESULT res;
+	res = f_mount(0,&fs);        
+	if (res != FR_OK)
+	{
+		printf("\r\n挂载文件系统失败,错误: %u",res);
+		return;
+	}
+        res = f_opendir(&dirs,(const TCHAR*)"/");
+        res = f_chdir(dir);	
+	res = f_unlink((TCHAR *)file_name);	
+	f_mount(0,NULL);
+}
 
 void edit_file(const TCHAR *dir,const TCHAR *write_file,char *write_data,uint32_t index)
 {
 	FATFS fs;
-//	FATFS *fls = &fs;
 	FIL	file;
 	FRESULT res;
 	DIR dirs;
-	FILINFO finfo;
         uint32_t n_write=0x00;
         uint32_t n_written = 0x00;
         for(n_write=0;*write_data++!='\0';)
@@ -291,7 +272,6 @@ void edit_file(const TCHAR *dir,const TCHAR *write_file,char *write_data,uint32_
           n_write++;
         }
         write_data=write_data-n_write-1;
-//        printf("\r\n--%d--\r\n",n_write);
 	res = f_mount(0,&fs);
 	if (res != FR_OK)
 	{
@@ -304,7 +284,6 @@ void edit_file(const TCHAR *dir,const TCHAR *write_file,char *write_data,uint32_
         res = f_lseek (&file, index);
 	if (res == FR_OK)
 	{
-          //printf("\r\n打开文件 %s 成功",write_file);
           if(n_write<=512)
           {
             res = f_write(&file,write_data,n_write,&n_written);

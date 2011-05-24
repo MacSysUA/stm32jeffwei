@@ -14,7 +14,7 @@ char *read_file(const TCHAR *dir,const TCHAR *file_name,int offset,int length);
 
 void creat_file(const TCHAR *file_name);
 
-void delete_file(const TCHAR *file_name);
+void delete_file(const TCHAR *dir, const TCHAR *file_name);
 
 void creat_dir(const TCHAR *dir_name);
 

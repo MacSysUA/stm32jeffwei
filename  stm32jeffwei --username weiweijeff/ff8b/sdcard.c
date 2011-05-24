@@ -16,7 +16,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "sdcard.h"
-#include "stdio.h"
+//#include "stdio.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define NULL 0
@@ -90,7 +90,8 @@
 /* Private variables ---------------------------------------------------------*/
 static u32 CardType =  SDIO_STD_CAPACITY_SD_CARD_V1_1;
 static u32 CSD_Tab[4], CID_Tab[4], RCA = 0;
-static u32 DeviceMode = SD_POLLING_MODE;
+//static u32 DeviceMode = SD_POLLING_MODE;
+static u32 DeviceMode = SD_DMA_MODE;
 static u32 TotalNumberOfBytes = 0, StopCondition = 0;
 u32 *SrcBuffer, *DestBuffer;
 volatile SD_Error TransferError = SD_OK;
@@ -144,7 +145,7 @@ SD_Error SD_Init(void)
 
   if (errorstatus != SD_OK)
   {
-    printf("-SD_PowerON-%u-",errorstatus);
+//    printf("-SD_PowerON-%u-",errorstatus);
     /* CMD Response TimeOut (wait for CMDSENT flag) */
     return(errorstatus);
   }
@@ -153,7 +154,7 @@ SD_Error SD_Init(void)
 
   if (errorstatus != SD_OK)
   {
-    printf("-SD_InitializeCards()-%u-",errorstatus);
+//    printf("-SD_InitializeCards()-%u-",errorstatus);
     /* CMD Response TimeOut (wait for CMDSENT flag) */
     return(errorstatus);
   }
@@ -167,7 +168,7 @@ SD_Error SD_Init(void)
   SDIO_InitStructure.SDIO_BusWide = SDIO_BusWide_1b;
   SDIO_InitStructure.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Disable;
   SDIO_Init(&SDIO_InitStructure);
-  printf("-last-%u-",errorstatus);
+//  printf("-last-%u-",errorstatus);
 
   return(errorstatus);
 }
@@ -1342,8 +1343,8 @@ SD_Error SD_WriteBlock(u32 addr, u32 *writebuff, u16 BlockSize)
     SDIO_DMACmd(ENABLE);
     while (DMA_GetFlagStatus(DMA2_FLAG_TC4) == RESET)
     {}
-    while ((TransferEnd == 0) && (TransferError == SD_OK))
-    {}
+//    while ((TransferEnd == 0) && (TransferError == SD_OK))
+//    {}
     if (TransferError != SD_OK)
     {
       return(TransferError);
