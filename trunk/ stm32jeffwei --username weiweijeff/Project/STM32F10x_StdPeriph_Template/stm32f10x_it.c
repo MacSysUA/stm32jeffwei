@@ -24,6 +24,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "stm32_eval_sdio_sd.h"
+#include "stdio.h"
+
+uint16_t capture = 0;
+extern __IO uint16_t CCR1_Val;
+extern __IO uint16_t CCR2_Val;
+extern __IO uint16_t CCR3_Val;
+extern __IO uint16_t CCR4_Val;
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -150,6 +157,66 @@ void SDIO_IRQHandler(void)
 {
   /* Process All SDIO Interrupt Sources */
   SD_ProcessIRQSrc();
+}
+
+/**
+  * @brief  This function handles USART2 global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void USART2_IRQHandler(void)
+{
+  
+}
+
+/**
+  * @brief  This function handles USART1 global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void USART1_IRQHandler(void)
+{
+}
+
+void TIM2_IRQHandler(void)
+{
+  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+
+    /* Pin PC.06 toggling with frequency = 73.24 Hz */
+    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
+    capture = TIM_GetCapture1(TIM2);
+    TIM_SetCompare1(TIM2, capture + CCR1_Val);
+    printf("0123456789\n\r");
+  }
+  else if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
+
+    /* Pin PC.07 toggling with frequency = 109.8 Hz */
+    GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
+    capture = TIM_GetCapture2(TIM2);
+    TIM_SetCompare2(TIM2, capture + CCR2_Val);
+  }
+  else if (TIM_GetITStatus(TIM2, TIM_IT_CC3) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC3);
+
+    /* Pin PC.08 toggling with frequency = 219.7 Hz */
+    GPIO_WriteBit(GPIOF, GPIO_Pin_8, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_8)));
+    capture = TIM_GetCapture3(TIM2);
+    TIM_SetCompare3(TIM2, capture + CCR3_Val);
+  }
+  else
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC4);
+
+    /* Pin PC.09 toggling with frequency = 439.4 Hz */
+    GPIO_WriteBit(GPIOF, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_9)));
+    capture = TIM_GetCapture4(TIM2);
+    TIM_SetCompare4(TIM2, capture + CCR4_Val);
+  }
 }
 
 /******************************************************************************/
