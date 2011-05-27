@@ -26,12 +26,12 @@
 #include "stm32_eval_sdio_sd.h"
 #include "stdio.h"
 
-uint16_t capture = 0;
-extern __IO uint16_t CCR1_Val;
-extern __IO uint16_t CCR2_Val;
-extern __IO uint16_t CCR3_Val;
-extern __IO uint16_t CCR4_Val;
-
+extern uint8_t rx_buffer1a[512]={0};
+extern uint8_t rx_buffer1b[512]={0};
+extern uint8_t rx_buffer2a[512]={0};
+extern uint8_t rx_buffer2b[512]={0};
+extern uint32_t *busy_buffer1,*busy_buffer2;
+extern void USART1_Rx_DMA_Config(void);
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
   */
@@ -164,10 +164,6 @@ void SDIO_IRQHandler(void)
   * @param  None
   * @retval None
   */
-void USART2_IRQHandler(void)
-{
-  
-}
 
 /**
   * @brief  This function handles USART1 global interrupt request.
@@ -175,48 +171,48 @@ void USART2_IRQHandler(void)
   * @retval None
   */
 void USART1_IRQHandler(void)
+{  
+  USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);  
+  USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+  TIM_Cmd(TIM2, ENABLE);
+  TIM_Cmd(TIM3, ENABLE);
+}
+void USART2_IRQHandler(void)
 {
 }
-
 void TIM2_IRQHandler(void)
 {
-  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
+  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);  
+  GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
+}
+void TIM3_IRQHandler(void)
+{
+  TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+  GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
+}
+void DMA1_Channel5_IRQHandler(void)
+{
+  if(DMA_GetITStatus(DMA1_IT_TC5)!=RESET)
   {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
-
-    /* Pin PC.06 toggling with frequency = 73.24 Hz */
-    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
-    capture = TIM_GetCapture1(TIM2);
-    TIM_SetCompare1(TIM2, capture + CCR1_Val);
-    printf("0123456789\n\r");
-  }
-  else if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)
-  {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
-
-    /* Pin PC.07 toggling with frequency = 109.8 Hz */
-    GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
-    capture = TIM_GetCapture2(TIM2);
-    TIM_SetCompare2(TIM2, capture + CCR2_Val);
-  }
-  else if (TIM_GetITStatus(TIM2, TIM_IT_CC3) != RESET)
-  {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC3);
-
-    /* Pin PC.08 toggling with frequency = 219.7 Hz */
-    GPIO_WriteBit(GPIOF, GPIO_Pin_8, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_8)));
-    capture = TIM_GetCapture3(TIM2);
-    TIM_SetCompare3(TIM2, capture + CCR3_Val);
-  }
-  else
-  {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC4);
-
-    /* Pin PC.09 toggling with frequency = 439.4 Hz */
+    if(*busy_buffer1==(uint32_t)rx_buffer1a)
+    {
+      *busy_buffer1=(uint32_t)rx_buffer1b;
+    }
+    else
+    {
+      *busy_buffer1=(uint32_t)rx_buffer1a;
+    }
+    
     GPIO_WriteBit(GPIOF, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_9)));
-    capture = TIM_GetCapture4(TIM2);
-    TIM_SetCompare4(TIM2, capture + CCR4_Val);
+    DMA_ClearITPendingBit(DMA1_IT_GL5);
+    
+    *busy_buffer1=(uint32_t)rx_buffer1a;
   }
+}
+
+void DMA1_Channel6_IRQHandler(void)
+{
+  GPIO_WriteBit(GPIOF, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_9)));
 }
 
 /******************************************************************************/

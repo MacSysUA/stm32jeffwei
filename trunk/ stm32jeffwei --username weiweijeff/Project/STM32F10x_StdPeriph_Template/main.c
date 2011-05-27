@@ -38,31 +38,30 @@
 
 
 
-uint8_t rx_buffer1=0;
-uint8_t rx_buffer2=0;
-#define USART1_Tx_DMA_Channel DMA1_Channel4
-#define USART2_Tx_DMA_Channel DMA1_Channel7
+uint8_t rx_buffer1a[512]={0};
+uint8_t rx_buffer1b[512]={0};
+uint8_t rx_buffer2a[512]={0};
+uint8_t rx_buffer2b[512]={0};
+uint32_t *busy_buffer1,*busy_buffer2;
+
+#define USART1_Rx_DMA_Channel DMA1_Channel5
+#define USART2_Rx_DMA_Channel DMA1_Channel6
 #define USART1_DR_Base ((uint32_t)0x40013804)
 #define USART2_DR_Base ((uint32_t)0x40004404)
 
-
-  __IO uint16_t CCR1_Val = 65535;
-  __IO uint16_t CCR2_Val = 27309;
-  __IO uint16_t CCR3_Val = 13654;
-  __IO uint16_t CCR4_Val = 6826;
-//  uint16_t PrescalerValue = 0;
-#define PrescalerValue 1023
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
 void NVIC_Configuration(void);
 void SetSysClockTo72(void);
-
+void USART1_Rx_DMA_Config(void);
+void USART2_Rx_DMA_Config(void);
 void USART1_Init();
 
 void USART2_Init();
 
 void LED_GPIO_Configuration(void);
 void TIM2_Config(void);
+void TIM3_Config(void);
 void delay(void)//延时函数，流水灯显示用
 {
  unsigned int i;
@@ -100,12 +99,17 @@ int main(void)
      */     
        
   SetSysClockTo72();
-  NVIC_Configuration();
+  NVIC_Configuration();  
+  *busy_buffer1=(uint32_t)rx_buffer1a;
+  USART1_Rx_DMA_Config();
+  *busy_buffer2=(uint32_t)rx_buffer2a;
+  USART2_Rx_DMA_Config();
   USART1_Init();
   USART2_Init();
   LED_GPIO_Configuration();
   TIM2_Config();
-#if 1
+  TIM3_Config();
+#if 0
   get_disk_info();
 //  list_file();
 //  str=read_file("/","test.txt",0,32);
@@ -133,23 +137,7 @@ int main(void)
   LCD_DisplayStringLine(200,"hello");
   
   
-  /* Enable USART1 DMA TX request */
-  USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
-
-  /* Enable USART2 DMA TX request */
-  USART_DMACmd(USART2, USART_DMAReq_Tx, ENABLE);
-
-  /* Enable the USART1 Receive Interrupt */
-  USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
   
-  /* Enable the USART2 Receive Interrupt */
-  USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
-  
-  /* Enable USART1 DMA TX Channel */
-  DMA_Cmd(USART1_Tx_DMA_Channel, ENABLE);
-
-  /* Enable USART2 DMA TX Channel */
-  DMA_Cmd(USART2_Tx_DMA_Channel, ENABLE);
  #endif
  
   
@@ -332,12 +320,15 @@ void USART1_Init()
   USART_Init(USART1, &USART_InitStructure);
 
   /*********************************************/
-  //USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+  USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);
+  //USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);
+  USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
   //USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
   /*********************************************/
 
   /* Enable USART */
   USART_Cmd(USART1, ENABLE);
+  DMA_Cmd(USART1_Rx_DMA_Channel, ENABLE);
   USART_GetITStatus( USART1,  USART_IT_TC);
 }
 
@@ -382,12 +373,15 @@ void USART2_Init()
   USART_Init(USART2, &USART_InitStructure);
 
   /*********************************************/
-  //USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-  //USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+  USART_DMACmd(USART2,USART_DMAReq_Rx,ENABLE);
+  //USART_DMACmd(USART2,USART_DMAReq_Tx,ENABLE);
+  USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+  //USART_ITConfig(USART2, USART_IT_TXE, ENABLE);
   /*********************************************/
 
   /* Enable USART */
   USART_Cmd(USART2, ENABLE);
+  DMA_Cmd(USART2_Rx_DMA_Channel, ENABLE);
   USART_GetITStatus( USART2,  USART_IT_TC);
 }
 
@@ -404,57 +398,104 @@ void NVIC_Configuration(void)
   NVIC_InitTypeDef NVIC_InitStructure;
   /* Enable the USART1 Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
   
   /* Enable the USART2 Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  /* Enable the TIM2 global Interrupt */
-  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+  
+  /* Enable the USART1_Rx_DMA_Channel global Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
   
+  /* Enable the USART2_Rx_DMA_Channel global Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel6_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  
+  /* Enable the TIM2 global Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  
+  /* Enable the TIM3 global Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
 }
 
-/**
-  * @brief  Configures the DMA.
-  * @param  None
-  * @retval None
-  */
-void DMA_Configuration(void)
+
+void USART1_Rx_DMA_Config(void)
 {
+  /* DMA clock enable */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+  
   DMA_InitTypeDef DMA_InitStructure;
 
-  /* USART1_Tx_DMA_Channel (triggered by USART1 Tx event) Config */
-  DMA_DeInit(USART1_Tx_DMA_Channel);
+  /* USART1_Rx_DMA_Channel (triggered by USART1 Tx event) Config */
+  DMA_DeInit(USART1_Rx_DMA_Channel);
+  
   DMA_InitStructure.DMA_PeripheralBaseAddr = USART1_DR_Base;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) &rx_buffer2;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
-  DMA_InitStructure.DMA_BufferSize = 1;
+  DMA_InitStructure.DMA_MemoryBaseAddr = *busy_buffer1;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+  DMA_InitStructure.DMA_BufferSize = 512;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
   DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
   DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-  DMA_Init(USART1_Tx_DMA_Channel, &DMA_InitStructure);
   
-  /* USART2_Tx_DMA_Channel (triggered by USART2 Tx event) Config */
-  DMA_DeInit(USART2_Tx_DMA_Channel);
+  DMA_Init(USART1_Rx_DMA_Channel, &DMA_InitStructure);
+  
+  DMA_Cmd(USART1_Rx_DMA_Channel, ENABLE);
+  
+  DMA_ITConfig(USART1_Rx_DMA_Channel,DMA_IT_TC,ENABLE);
+}
+void USART2_Rx_DMA_Config(void)
+{
+  /* DMA clock enable */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+  
+  DMA_InitTypeDef DMA_InitStructure;
+
+  /* USART2_Rx_DMA_Channel (triggered by USART2 Tx event) Config */
+  DMA_DeInit(USART2_Rx_DMA_Channel);
+  
   DMA_InitStructure.DMA_PeripheralBaseAddr = USART2_DR_Base;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) &rx_buffer1;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
-  DMA_InitStructure.DMA_BufferSize = 1;
-  DMA_Init(USART2_Tx_DMA_Channel, &DMA_InitStructure);
+  DMA_InitStructure.DMA_MemoryBaseAddr = *busy_buffer2;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+  DMA_InitStructure.DMA_BufferSize = 512;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+  DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+  
+  DMA_Init(USART2_Rx_DMA_Channel, &DMA_InitStructure);
+  
+  DMA_Cmd(USART2_Rx_DMA_Channel, ENABLE);
+  
+  DMA_ITConfig(USART2_Rx_DMA_Channel,DMA_IT_TC,ENABLE);
+  
 }
 
 void TIM2_Config(void)
@@ -462,62 +503,41 @@ void TIM2_Config(void)
   /* TIM2 clock enable */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-  TIM_OCInitTypeDef  TIM_OCInitStructure;
   
-  /* Compute the prescaler value */
-//  PrescalerValue = (uint16_t) (SystemCoreClock / 60000) - 1;
-
-  /* Time base configuration */
-  TIM_TimeBaseStructure.TIM_Period = 65535;
-  TIM_TimeBaseStructure.TIM_Prescaler = 0;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-
+  /* TIM2 configuration */
+  TIM_TimeBaseStructure.TIM_Period = 1200-1;          
+  TIM_TimeBaseStructure.TIM_Prescaler = ((SystemCoreClock/1200) - 1);
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
-  /* Prescaler configuration */
-  TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
-
-  /* Output Compare Timing Mode configuration: Channel1 */
-  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = CCR1_Val;
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
-  TIM_OC1Init(TIM2, &TIM_OCInitStructure);
-
-  TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
-  /* Output Compare Timing Mode configuration: Channel2 */
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = CCR2_Val;
-
-  TIM_OC2Init(TIM2, &TIM_OCInitStructure);
-
-  TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
-  /* Output Compare Timing Mode configuration: Channel3 */
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = CCR3_Val;
-
-  TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-
-  TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
-  /* Output Compare Timing Mode configuration: Channel4 */
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = CCR4_Val;
-
-  TIM_OC4Init(TIM2, &TIM_OCInitStructure);
-
-  TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
   /* TIM IT enable */
-  TIM_ITConfig(TIM2, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4, ENABLE);
+  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 
   /* TIM2 enable counter */
-  TIM_Cmd(TIM2, ENABLE);
+  //TIM_Cmd(TIM2, ENABLE);
 }
+
+void TIM3_Config(void)
+{
+  /* TIM2 clock enable */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+  
+  /* TIM3 configuration */
+  TIM_TimeBaseStructure.TIM_Period = 2400-1;          
+  TIM_TimeBaseStructure.TIM_Prescaler = ((SystemCoreClock/1200) - 1);
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
+  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+
+  /* TIM IT enable */
+  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+
+  /* TIM3 enable counter */
+  //TIM_Cmd(TIM3, ENABLE);
+}
+
 
 void LED_GPIO_Configuration(void)
 {
