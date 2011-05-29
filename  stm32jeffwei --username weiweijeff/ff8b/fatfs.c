@@ -324,3 +324,31 @@ void edit_file(const TCHAR *dir,const TCHAR *write_file,char *write_data,uint32_
 	}
         f_mount(0,NULL);
 }
+
+//–¥»Î<512byte ˝æ›,n_write<=512
+void write_buffer(const TCHAR *write_file,char *write_buffer,uint16_t n_write, uint32_t index)
+{
+  FATFS fs;
+  FIL file;
+  FRESULT res;
+  DIR dirs;
+  uint32_t n_written = 0x00;
+  res = f_mount(0,&fs);
+  res = f_opendir(&dirs,(const TCHAR*)"/");
+  res = f_open(&file,write_file,FA_READ | FA_WRITE);
+  res = f_lseek (&file, index);
+  if (res == FR_OK)
+  {
+  retry:  res = f_write(&file,write_buffer,n_write,&n_written);
+    if ((res == FR_OK) && (n_written==n_write))
+    {
+      f_close(&file);
+    }
+    else
+    {
+      n_written=0;
+      goto retry;
+    }
+  }
+  f_mount(0,NULL);
+}

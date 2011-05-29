@@ -19,6 +19,8 @@ void delete_file(const TCHAR *dir, const TCHAR *file_name);
 void creat_dir(const TCHAR *dir_name);
 
 void edit_file(const TCHAR *dir,const TCHAR *write_file,char *write_data,uint32_t index);
+void write_buffer(const TCHAR *write_file,char *write_buffer,uint16_t n_write, uint32_t index);
+
 void get_disk_info(void);
 void format_disk(
                  BYTE drv,			/* Logical drive number */

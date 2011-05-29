@@ -37,13 +37,12 @@
   */
 
 
-
+uint32_t file1_index=0;
 uint8_t rx_buffer1a[512]={0};
 uint8_t rx_buffer1b[512]={0};
 uint8_t rx_buffer2a[512]={0};
 uint8_t rx_buffer2b[512]={0};
-uint32_t *busy_buffer1,*busy_buffer2;
-
+uint8_t *busy_buffer1,*busy_buffer2,*free_buffer1,*free_buffer2;
 #define USART1_Rx_DMA_Channel DMA1_Channel5
 #define USART2_Rx_DMA_Channel DMA1_Channel6
 #define USART1_DR_Base ((uint32_t)0x40013804)
@@ -97,37 +96,42 @@ int main(void)
        To reconfigure the default setting of SystemInit() function, refer to
        system_stm32f10x.c file
      */     
+  
+  
        
   SetSysClockTo72();
   NVIC_Configuration();  
-  *busy_buffer1=(uint32_t)rx_buffer1a;
+  busy_buffer1=rx_buffer1a;
   USART1_Rx_DMA_Config();
-  *busy_buffer2=(uint32_t)rx_buffer2a;
+  busy_buffer2=rx_buffer2a;
   USART2_Rx_DMA_Config();
   USART1_Init();
   USART2_Init();
   LED_GPIO_Configuration();
   TIM2_Config();
   TIM3_Config();
-#if 0
-  get_disk_info();
-//  list_file();
+  
+//  format_disk(0,0,512);
+//  get_disk_info();
+  list_file();
 //  str=read_file("/","test.txt",0,32);
 //  printf("\n\r");
 //  printf(str);
-//  delete_file("hello.txt");
-//  creat_file("hello.txt");  
+//  delete_file("/","test.txt");
+  creat_file("test.txt");  
 //  delete_file("/","hello.txt");
 //  creat_file("hello.txt");
 //  delay();
-  edit_file("/","hello.txt","creat_file is ok!",0x00);
-  str=read_file("/","hello.txt",0,32);
+//  edit_file("/","hello.txt","creat_file is ok!",0x00);
+  str=read_file("/","test.txt",0x00,512);
   printf("\n\r");
   printf(str);
   printf("\n\r");
+  
   list_file();
 
  
+#if 0
   
   LCD_DeInit();
   STM3210E_LCD_Init();
@@ -151,8 +155,7 @@ int main(void)
   
   while (1)
   {
-    
-    delay();
+;    
   }
 }
 
@@ -451,7 +454,7 @@ void USART1_Rx_DMA_Config(void)
   DMA_DeInit(USART1_Rx_DMA_Channel);
   
   DMA_InitStructure.DMA_PeripheralBaseAddr = USART1_DR_Base;
-  DMA_InitStructure.DMA_MemoryBaseAddr = *busy_buffer1;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)busy_buffer1;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_BufferSize = 512;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -479,7 +482,7 @@ void USART2_Rx_DMA_Config(void)
   DMA_DeInit(USART2_Rx_DMA_Channel);
   
   DMA_InitStructure.DMA_PeripheralBaseAddr = USART2_DR_Base;
-  DMA_InitStructure.DMA_MemoryBaseAddr = *busy_buffer2;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)busy_buffer2;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_BufferSize = 512;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -513,6 +516,7 @@ void TIM2_Config(void)
 
   /* TIM IT enable */
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+  TIM2->EGR |=(1<<0);
 
   /* TIM2 enable counter */
   //TIM_Cmd(TIM2, ENABLE);
@@ -533,6 +537,8 @@ void TIM3_Config(void)
 
   /* TIM IT enable */
   TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+  
+  TIM3->EGR |=(1<<0);
 
   /* TIM3 enable counter */
   //TIM_Cmd(TIM3, ENABLE);
