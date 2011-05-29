@@ -149,7 +149,6 @@
           <state>USE_STDPERIPH_DRIVER</state>
           <state>STM32F10X_HD</state>
           <state>USE_STM3210E_EVAL</state>
-          <state>VECT_TAB_RAM</state>
         </option>
         <option>
           <name>CCPreprocFile</name>

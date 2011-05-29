@@ -25,13 +25,17 @@
 #include "stm32f10x_it.h"
 #include "stm32_eval_sdio_sd.h"
 #include "stdio.h"
+#include "fatfs.h"
 
-extern uint8_t rx_buffer1a[512]={0};
-extern uint8_t rx_buffer1b[512]={0};
-extern uint8_t rx_buffer2a[512]={0};
-extern uint8_t rx_buffer2b[512]={0};
-extern uint32_t *busy_buffer1,*busy_buffer2;
+uint8_t last_data1_flag=0;    
+extern uint8_t rx_buffer1a[512];
+extern uint8_t rx_buffer1b[512];
+extern uint8_t rx_buffer2a[512];
+extern uint8_t rx_buffer2b[512];
+extern uint8_t *busy_buffer1,*busy_buffer2,*free_buffer1,*free_buffer2;
 extern void USART1_Rx_DMA_Config(void);
+extern uint32_t file1_index;
+
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
   */
@@ -171,42 +175,70 @@ void SDIO_IRQHandler(void)
   * @retval None
   */
 void USART1_IRQHandler(void)
-{  
+{ 
+  last_data1_flag=1;
   USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);  
   USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+//  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
   TIM_Cmd(TIM2, ENABLE);
-  TIM_Cmd(TIM3, ENABLE);
+//  GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)0x01);
+//  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+//  TIM2->CNT = 0 ;
 }
+
 void USART2_IRQHandler(void)
 {
+  USART_ITConfig(USART2, USART_IT_RXNE, DISABLE);  
+  USART_ClearITPendingBit(USART2,USART_IT_RXNE);
+  TIM_Cmd(TIM3, ENABLE);
 }
 void TIM2_IRQHandler(void)
 {
-  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);  
-  GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
+  if(TIM_GetITStatus(TIM2, TIM_IT_Update)!=RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+//    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+//    TIM_Cmd(TIM2, DISABLE);
+    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
+//    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)0x00);
+    if(last_data1_flag)
+    {
+      uint8_t n=512-DMA_GetCurrDataCounter(DMA1_Channel5);
+      write_buffer("test.txt", busy_buffer1,n, file1_index);
+      file1_index+=n;
+      last_data1_flag=0;
+      printf("\n\r-%u-\n\r",n);
+    }
+    
+  }
+   
 }
 void TIM3_IRQHandler(void)
 {
   TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
   GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
 }
+
 void DMA1_Channel5_IRQHandler(void)
 {
   if(DMA_GetITStatus(DMA1_IT_TC5)!=RESET)
   {
-    if(*busy_buffer1==(uint32_t)rx_buffer1a)
+    TIM2->CNT = 0 ;
+    if(busy_buffer1==rx_buffer1a)
     {
-      *busy_buffer1=(uint32_t)rx_buffer1b;
+      busy_buffer1=rx_buffer1b;
+      free_buffer1=rx_buffer1a;
     }
     else
     {
-      *busy_buffer1=(uint32_t)rx_buffer1a;
+      busy_buffer1=rx_buffer1a;
+      free_buffer1=rx_buffer1b;
     }
-    
-    GPIO_WriteBit(GPIOF, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_9)));
+//    GPIO_WriteBit(GPIOF, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_9)));
     DMA_ClearITPendingBit(DMA1_IT_GL5);
-    
-    *busy_buffer1=(uint32_t)rx_buffer1a;
+    USART1_Rx_DMA_Config();
+    write_buffer("test.txt", free_buffer1,512, file1_index);
+    file1_index+=512;
   }
 }
 
