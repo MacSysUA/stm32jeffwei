@@ -72,7 +72,7 @@ typedef enum
   SD_UNSUPPORTED_FEATURE,  
   SD_UNSUPPORTED_HW,  
   SD_ERROR,  
-  SD_OK,  
+  SD_OK=0,  
 } SD_Error;
 
 /* SDIO Commands  Index */
