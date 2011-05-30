@@ -9,11 +9,15 @@
 #include "stm32f10x.h"
 #include "sdcard.h"
 #include<stdio.h>
+#include "stm3210e_eval_fsmc_nor.h"
+
+
 
 #define BLOCK_SIZE            512 /* Block Size in Bytes */
 
-SD_CardInfo  SDCardInfo;
 
+
+SD_CardInfo  SDCardInfo;
 /*-----------------------------------------------------------------------*/
 /* Inidialize a Drive                                                    */
 
@@ -25,20 +29,31 @@ DSTATUS disk_initialize (
 BYTE drv /* Physical drive number (0) */
 )
 {
-  NVIC_InitTypeDef NVIC_InitStructure;
-
-  SD_Init();
-  SD_GetCardInfo(&SDCardInfo);
-  SD_SelectDeselect((uint32_t) (SDCardInfo.RCA << 16));
-  SD_EnableWideBusOperation(SDIO_BusWide_4b);
-  SD_SetDeviceMode(SD_DMA_MODE);
-  NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-  
-//NAND_Init();
+  switch(drv)
+  {
+  case 0:
+    {
+     NVIC_InitTypeDef NVIC_InitStructure;
+     SD_Init();
+     SD_GetCardInfo(&SDCardInfo);
+     SD_SelectDeselect((uint32_t) (SDCardInfo.RCA << 16));
+     SD_EnableWideBusOperation(SDIO_BusWide_4b);
+     SD_SetDeviceMode(SD_DMA_MODE);
+     NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+     NVIC_Init(&NVIC_InitStructure); 
+    }
+    break;
+  case 1:
+    {
+      /* Enable the FSMC Clock */
+      RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+      /* Configure FSMC Bank1 NOR/SRAM2 */
+      NOR_Init();
+    }
+  }
 return 0;
 }
 
@@ -71,11 +86,8 @@ uint32_t Memory_Offset;
 
 Transfer_Length =  count * 512;
 Memory_Offset = sector * 512;
-
 SD_ReadBlock(Memory_Offset, (uint32_t *)buff, Transfer_Length);
-//NAND_Read(Memory_Offset, (uint32_t *)buff, Transfer_Length);
-
-return RES_OK;
+  return RES_OK;
 }
 
 

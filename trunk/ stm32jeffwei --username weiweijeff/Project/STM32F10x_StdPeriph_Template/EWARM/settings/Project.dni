@@ -11,7 +11,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=1790279870
+Checksum=-1250662152
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -31,6 +31,45 @@ UseTrigger=1
 TriggerName=main
 LimitSize=0
 ByteLimit=50
+[JLinkDriver]
+SWOInfo_CpuClock=0x044AA200
+SWOInfo_SWOClockAutoDetect=0
+SWOInfo_JtagSpeed=0x001E8480
+SWOInfo_SWOPrescaler=0x00000024
+SWOInfo_SWOClockWanted=0x001E8480
+SWOInfo_HWTraceEnabled=0
+SWOInfo_TimestampsEnabled=0
+SWOInfo_TimestampsPrescalerIndex=0x00000000
+SWOInfo_TimestampsPrescalerData=0x00000000
+SWOInfo_PCSamplingEnabled=0
+SWOInfo_PCSamplingCYCTAP=0x00000001
+SWOInfo_PCSamplingPOSTCNT=0x0000000F
+SWOInfo_DataLogMode=0x00000000
+SWOInfo_CPIEnabled=0
+SWOInfo_EXCEnabled=0
+SWOInfo_SLEEPEnabled=0
+SWOInfo_LSUEnabled=0
+SWOInfo_FOLDEnabled=0
+SWOInfo_EXCTRCEnabled=0
+SWOInfo_ITMPortsEnabled=0x00000000
+SWOInfo_ITMPortsTermIO=0x00000000
+SWOInfo_ITMPortsLogFile=0x00000000
+SWOInfo_ITMLogFile=$PROJ_DIR$\ITM.log
+[DataLog]
+LogEnabled=0
+SumEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[TraceHelperExtra]
+Enabled=0
+ShowSource=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

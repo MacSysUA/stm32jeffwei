@@ -26,6 +26,8 @@
 #include "stm32_eval_sdio_sd.h"
 #include "stdio.h"
 #include "fatfs.h"
+#include "stm32f10x_adc.h"
+
 
 uint8_t last_data1_flag=0;    
 extern uint8_t rx_buffer1a[512];
@@ -35,7 +37,7 @@ extern uint8_t rx_buffer2b[512];
 extern uint8_t *busy_buffer1,*busy_buffer2,*free_buffer1,*free_buffer2;
 extern void USART1_Rx_DMA_Config(void);
 extern uint32_t file1_index;
-
+extern vu16 ADCConvertedValue;
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
   */
@@ -207,7 +209,7 @@ void TIM2_IRQHandler(void)
       write_buffer("test.txt", busy_buffer1,n, file1_index);
       file1_index+=n;
       last_data1_flag=0;
-      printf("\n\r-%u-\n\r",n);
+      printf("\n\r-%u-\n\r",file1_index);
     }
     
   }
@@ -247,6 +249,23 @@ void DMA1_Channel6_IRQHandler(void)
   GPIO_WriteBit(GPIOF, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_9)));
 }
 
+
+void DMA1_Channel1_IRQHandler(void)
+{
+  if(DMA_GetITStatus(DMA1_IT_TC1)!=RESET)
+  {
+    printf("\n%u",ADCConvertedValue);
+  }
+}
+
+void ADC1_2_IRQnHandler(void)
+{
+//  if(ADC_GetITStatus(ADC1,ADC_IT_EOC)!=RESET)
+  {
+//    ADC_ClearITPendingBit(ADC1,ADC_IT_EOC);
+//    printf("\n\r%u",ADC_GetConversionValue(ADC1));
+  }
+}
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

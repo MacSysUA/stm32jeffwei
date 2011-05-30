@@ -23,12 +23,13 @@
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
 #include <stdio.h>
+#include "stm3210e_eval_fsmc_nand.h"
 #include "stm3210e_eval_lcd.h"
 #include "fatfs.h"
 #include "ff.h"
 #include <assert.h>
 #include "queue.h"
-
+#include "ADC.h"
 /**
   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
@@ -47,6 +48,8 @@ uint8_t *busy_buffer1,*busy_buffer2,*free_buffer1,*free_buffer2;
 #define USART2_Rx_DMA_Channel DMA1_Channel6
 #define USART1_DR_Base ((uint32_t)0x40013804)
 #define USART2_DR_Base ((uint32_t)0x40004404)
+
+
 
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
@@ -111,13 +114,36 @@ int main(void)
   TIM2_Config();
   TIM3_Config();
   
+  ADC1_DMA_Config();
+  ADC1_GPIO_Config();
+  ADC1_Config();
+//  printf("\n\r%u",ADC_GetConversionValue(ADC1));
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+
+  /* Configure FSMC Bank1 NOR/SRAM2 */
+//  NOR_Init();
+ 
+  /* Read NOR memory ID */
+//  NOR_ReadID(&NOR_ID);
+
+//  NOR_ReturnToReadMode();
+  /* FSMC Initialization */
+//  NAND_Init();
+
+  /* Read OneNAND memory ID */
+//  NAND_ReadID(&NAND_ID);  
+//    printf("\n\r-Maker_ID=%x-\n\r",NAND_ID.Maker_ID);
+//    printf("\n\r-Device_ID=%x-\n\r",NAND_ID.Device_ID);
+  
+  
+  
 //  format_disk(0,0,512);
 //  get_disk_info();
   list_file();
 //  str=read_file("/","test.txt",0,32);
 //  printf("\n\r");
 //  printf(str);
-//  delete_file("/","test.txt");
+  delete_file("/","test.txt");
   creat_file("test.txt");  
 //  delete_file("/","hello.txt");
 //  creat_file("hello.txt");
@@ -439,7 +465,15 @@ void NVIC_Configuration(void)
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure); 
+  
+  /* Enable the ADC_DMA_Channel global Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+  
 }
 
 
