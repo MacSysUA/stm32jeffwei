@@ -66,8 +66,8 @@ void TIM2_Config(void);
 void TIM3_Config(void);
 void delay(void)//延时函数，流水灯显示用
 {
- unsigned int i;
- for(i=0;i<0xFFFFF;i++);
+ uint32_t i;
+ for(i=0;i<0x1FFFF;i++);
 }
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -114,10 +114,14 @@ int main(void)
   TIM2_Config();
   TIM3_Config();
   
-  ADC1_DMA_Config();
-  ADC1_GPIO_Config();
-  ADC1_Config();
-//  printf("\n\r%u",ADC_GetConversionValue(ADC1));
+//  ADC1_DMA_Config();
+//  ADC1_GPIO_Config();
+//  ADC1_Config();
+  
+  
+
+  
+  //  printf("\n\r%u",ADC_GetConversionValue(ADC1));
 //  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
 
   /* Configure FSMC Bank1 NOR/SRAM2 */
@@ -157,14 +161,46 @@ int main(void)
   list_file();
 
  
-#if 0
+#if 1
+  GPIO_InitTypeDef GPIO_InitStructure;
+  /* Enable FSMC, GPIOD, GPIOE, GPIOF, GPIOG and AFIO clocks */
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE |
+                         RCC_APB2Periph_GPIOF | RCC_APB2Periph_GPIOG |
+                         RCC_APB2Periph_AFIO, ENABLE);
   
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |
+                                GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7; 
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+  
+  
+  /* Set PE.07(D4), PE.08(D5), PE.09(D6), PE.10(D7), PE.11(D8), PE.12(D9), PE.13(D10),
+     PE.14(D11), PE.15(D12) as alternate function push pull */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | 
+                                GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | 
+                                GPIO_Pin_15;
+  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  /* Set PF.00(A0 (RS)) as alternate function push pull */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_Init(GPIOF, &GPIO_InitStructure);
+  /* Set PG.12(NE4 (LCD/CS)) as alternate function push pull - CE3(LCD /CS) */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_Init(GPIOG, &GPIO_InitStructure);
+  
+  
+  
+  GPIO_WriteBit(GPIOF, GPIO_Pin_10, (BitAction)(0x00));
+  delay();
+  GPIO_WriteBit(GPIOF, GPIO_Pin_10, (BitAction)(0x01));
+  delay();
   LCD_DeInit();
   STM3210E_LCD_Init();
-  LCD_Clear(LCD_COLOR_BLUE);
-  LCD_DrawLine( 100,  150,  10,  LCD_DIR_HORIZONTAL);
-  LCD_DisplayChar(0,0,'F');
-  LCD_DisplayStringLine(200,"hello");
+//  LCD_Clear(LCD_COLOR_BLUE);
+//  LCD_DrawLine( 100,  150,  10,  LCD_DIR_HORIZONTAL);
+//  LCD_DisplayChar(0,0,'F');
+//  LCD_DisplayStringLine(200,"hello");
   
   
   
@@ -181,7 +217,7 @@ int main(void)
   
   while (1)
   {
-;    
+    delay();
   }
 }
 
@@ -587,10 +623,15 @@ void LED_GPIO_Configuration(void)
   GPIO_InitTypeDef GPIO_InitStructure;
 
   /* GPIOC Configuration:Pin6, 7, 8 and 9 as alternate function push-pull */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
   GPIO_Init(GPIOF, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
