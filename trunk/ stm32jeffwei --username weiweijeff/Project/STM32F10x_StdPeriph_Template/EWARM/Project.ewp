@@ -4991,6 +4991,9 @@
       <name>$PROJ_DIR$\..\ADC.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\LCD7.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
     <file>
