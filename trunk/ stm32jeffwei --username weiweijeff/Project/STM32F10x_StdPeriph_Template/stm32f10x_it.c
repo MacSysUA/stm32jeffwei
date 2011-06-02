@@ -28,7 +28,7 @@
 #include "fatfs.h"
 #include "stm32f10x_adc.h"
 
-
+uint32_t timer=0;
 uint8_t last_data1_flag=0;    
 extern uint8_t rx_buffer1a[512];
 extern uint8_t rx_buffer1b[512];
@@ -36,6 +36,8 @@ extern uint8_t rx_buffer2a[512];
 extern uint8_t rx_buffer2b[512];
 extern uint8_t *busy_buffer1,*busy_buffer2,*free_buffer1,*free_buffer2;
 extern void USART1_Rx_DMA_Config(void);
+extern void TIM2_Config(void);
+extern void TIM3_Config(void);
 extern uint32_t file1_index;
 extern vu16 ADCConvertedValue;
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -225,7 +227,7 @@ void DMA1_Channel5_IRQHandler(void)
 {
   if(DMA_GetITStatus(DMA1_IT_TC5)!=RESET)
   {
-    TIM2->CNT = 0 ;
+    TIM2->CNT=0x00;
     if(busy_buffer1==rx_buffer1a)
     {
       busy_buffer1=rx_buffer1b;
@@ -241,6 +243,7 @@ void DMA1_Channel5_IRQHandler(void)
     USART1_Rx_DMA_Config();
     write_buffer("test.txt", free_buffer1,512, file1_index);
     file1_index+=512;
+    timer=TIM2->CNT;
   }
 }
 
@@ -254,7 +257,7 @@ void DMA1_Channel1_IRQHandler(void)
 {
   if(DMA_GetITStatus(DMA1_IT_TC1)!=RESET)
   {
-    printf("\n%u",ADCConvertedValue);
+    printf("\n\r%u",ADCConvertedValue);
   }
 }
 
