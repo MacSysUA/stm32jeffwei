@@ -30,13 +30,13 @@
 #include <assert.h>
 #include "queue.h"
 #include "ADC.h"
+#include "LCD7.h"
 /**
   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
   * @param  None
   * @retval None
   */
-
 
 uint32_t file1_index=0;
 uint8_t rx_buffer1a[512]={0};
@@ -142,7 +142,7 @@ int main(void)
   
   
 //  format_disk(0,0,512);
-//  get_disk_info();
+  get_disk_info();
   list_file();
 //  str=read_file("/","test.txt",0,32);
 //  printf("\n\r");
@@ -160,52 +160,35 @@ int main(void)
   
   list_file();
 
+  
+
+ STM3210E_LCD_Init();
+ LCD_Clear(LCD_COLOR_BLACK);
  
-#if 1
-  GPIO_InitTypeDef GPIO_InitStructure;
-  /* Enable FSMC, GPIOD, GPIOE, GPIOF, GPIOG and AFIO clocks */
-//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE |
-                         RCC_APB2Periph_GPIOF | RCC_APB2Periph_GPIOG |
-                         RCC_APB2Periph_AFIO, ENABLE);
+ write_CN16(100,100,"土",0x0000,0xffff);
+ int i,n;
+//  u8 buffer[32]={0x00,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x08,0x7F,0xFC,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x04,0xFF,0xFE,0x00,0x00,0x00,0x00};
+    u8 buffer[32]={0x00,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x10,0xFE,0x3F,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x20,0xFF,0x7F,0x00,0x00,0x00,0x00};/*"土",4168*/
   
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |
-                                GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7; 
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
+  LCD_WriteReg(0,200); // .............. CUR_Y
+  LCD_WriteReg(1,200); // .............. CUR_X
+  LCD_WriteReg(3,215); // ............ END_X
   
-  
-  /* Set PE.07(D4), PE.08(D5), PE.09(D6), PE.10(D7), PE.11(D8), PE.12(D9), PE.13(D10),
-     PE.14(D11), PE.15(D12) as alternate function push pull */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | 
-                                GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | 
-                                GPIO_Pin_15;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
-  /* Set PF.00(A0 (RS)) as alternate function push pull */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-  GPIO_Init(GPIOF, &GPIO_InitStructure);
-  /* Set PG.12(NE4 (LCD/CS)) as alternate function push pull - CE3(LCD /CS) */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-  GPIO_Init(GPIOG, &GPIO_InitStructure);
-  
-  
-  
-  GPIO_WriteBit(GPIOF, GPIO_Pin_10, (BitAction)(0x00));
-  delay();
-  GPIO_WriteBit(GPIOF, GPIO_Pin_10, (BitAction)(0x01));
-  delay();
-  LCD_DeInit();
-  STM3210E_LCD_Init();
-//  LCD_Clear(LCD_COLOR_BLUE);
-//  LCD_DrawLine( 100,  150,  10,  LCD_DIR_HORIZONTAL);
-//  LCD_DisplayChar(0,0,'F');
-//  LCD_DisplayStringLine(200,"hello");
-  
-  
-  
- #endif
- 
+  LCD_WriteReg2(); // .............. PIXELS
+  for(n=0;n<32;n++)
+  {
+    for (i = 0; i < 8; i++)//前半行
+      {
+        if (buffer[n] & (0x01<<i))
+        {
+          LCD_WritePoint(LCD_COLOR_BLUE);//写有效点
+        }
+        else
+        {
+          LCD_WritePoint(LCD_COLOR_CYAN);//写底色
+        }
+      }
+  }
   
   
   
@@ -506,10 +489,15 @@ void NVIC_Configuration(void)
   /* Enable the ADC_DMA_Channel global Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
   
+  NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
 }
 
 

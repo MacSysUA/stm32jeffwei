@@ -20,7 +20,6 @@
 #define Clr_RESET  GPIOA->BRR   = GPIO_Pin_8;
 
 void LCD7_GPIO_Config(void);
-void LCD7_FSMCConfig(void);
 void LCD7_Init(void);
 void LCD7_Wregaddr(uint8_t addr);
 void LCD7_Wregdata(uint16_t data);

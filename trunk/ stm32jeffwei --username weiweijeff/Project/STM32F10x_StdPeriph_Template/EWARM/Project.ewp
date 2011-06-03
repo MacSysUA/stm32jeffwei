@@ -1615,7 +1615,7 @@
         <option>
           <name>Variant</name>
           <version>13</version>
-          <state>37</state>
+          <state>36</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1731,7 +1731,9 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state></state>
+          <state>USE_STDPERIPH_DRIVER</state>
+          <state>STM32F10X_HD</state>
+          <state>USE_STM3210E_EVAL</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1844,7 +1846,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.o</state>
         </option>
         <option>
           <name>CCLangSelect</name>
@@ -1864,7 +1866,14 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\</state>
+          <state>$PROJ_DIR$\..\..\..\Libraries\CMSIS\CM3\CoreSupport</state>
+          <state>$PROJ_DIR$\..\..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
+          <state>$PROJ_DIR$\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc</state>
+          <state>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL</state>
+          <state>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL\Common</state>
+          <state>$PROJ_DIR$\..\..\..\Utilities\STM32_EVAL\STM3210E_EVAL</state>
+          <state>$PROJ_DIR$\..\..\..\ff8b</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1872,7 +1881,7 @@
         </option>
         <option>
           <name>CCStdIncludePath</name>
-          <state>###Uninitialized###</state>
+          <state>$TOOLKIT_DIR$\INC\</state>
         </option>
         <option>
           <name>CCCodeSection</name>
@@ -2095,7 +2104,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state></state>
+          <state>Project.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -2149,7 +2158,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>###Unitialized###</state>
+          <state>Project.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -2209,11 +2218,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>lnk0t.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_ram.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2273,7 +2282,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>__iar_program_start</state>
         </option>
         <option>
           <name>DoFill</name>
@@ -4842,6 +4851,9 @@
   <group>
     <name>ff8b</name>
     <file>
+      <name>$PROJ_DIR$\..\..\..\ff8b\option\ccsbcs.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\ff8b\diskio.c</name>
     </file>
     <file>
@@ -4974,6 +4986,7 @@
       <excluded>
         <configuration>STM32100B-EVAL</configuration>
         <configuration>STM3210C-EVAL</configuration>
+        <configuration>STM3210E-EVAL</configuration>
         <configuration>STM3210B-EVAL</configuration>
         <configuration>STM32100E-EVAL</configuration>
       </excluded>
@@ -4992,6 +5005,10 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\LCD7.c</name>
+      <excluded>
+        <configuration>STM32100B-EVAL</configuration>
+        <configuration>STM3210E-EVAL</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>

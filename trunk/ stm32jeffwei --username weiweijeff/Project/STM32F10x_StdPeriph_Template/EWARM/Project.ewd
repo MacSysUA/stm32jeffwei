@@ -1441,7 +1441,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\iostm32f10xxe.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -1481,11 +1481,11 @@
         </option>
         <option>
           <name>OCDynDriverList</name>
-          <state>ARMSIM_ID</state>
+          <state>JLINK_ID</state>
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
-          <state></state>
+          <state>5.41.2.51798</state>
         </option>
         <option>
           <name>OCDownloadAttachToProgram</name>
@@ -1513,7 +1513,7 @@
         </option>
         <option>
           <name>FlashLoadersV3</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\config\flashloader\ST\FlashSTM32F10xxE.board</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck1</name>
@@ -1800,7 +1800,7 @@
         <option>
           <name>CCJLinkResetList</name>
           <version>2</version>
-          <state>5</state>
+          <state>7</state>
         </option>
         <option>
           <name>CCJLinkInterfaceCmdLine</name>

@@ -157,7 +157,7 @@ void STM3210E_LCD_Init(void)
   
   _delay_(5); /* delay 50 ms */
   /* Check if the LCD is SPFD5408B Controller */
-  LCD_WriteReg(0x05,0x0f);
+  LCD_WriteReg(0x05,0xff);
    
 }
 
@@ -255,13 +255,20 @@ void LCD_ClearLine(uint8_t Line)
   */
 void LCD_Clear(uint16_t Color)
 {
-  uint32_t index = 0;
+  uint32_t index;
+    
+  LCD_WriteReg(0,0); // .............. CUR_Y
+  LCD_WriteReg(1,0); // .............. CUR_X
+  LCD_WriteReg(3,799); // ............ END_X
   
-  LCD_SetCursor(0x00, 0x013F); 
-  LCD_WriteRAM_Prepare(); /* Prepare to write GRAM */
-  for(index = 0; index < 76800; index++)
+  LCD->LCD_REG=2; // .............. PIXELS
+  
+  
+  for(index = 0; index < 384000; index++)
   {
-    LCD->LCD_RAM = Color;
+//    LCD->LCD_RAM = Color>>8;
+//    LCD->LCD_RAM = Color;
+    LCD_WritePoint(Color);
   }  
 }
 
@@ -403,7 +410,7 @@ void LCD_SetDisplayWindow(uint8_t Xpos, uint16_t Ypos, uint8_t Height, uint16_t 
   */
 void LCD_WindowModeDisable(void)
 {
-  LCD_SetDisplayWindow(479, 0x13F, 240, 320);
+  LCD_SetDisplayWindow(479, 0x13F, 480, 800);
   LCD_WriteReg(LCD_REG_3, 0x1018);    
 }
 
@@ -945,6 +952,7 @@ void LCD_WriteReg(uint8_t LCD_Reg, uint16_t LCD_RegValue)
   /* Write 16-bit Index, then Write Reg */
   LCD->LCD_REG = LCD_Reg;
   /* Write 16-bit Reg */
+  LCD->LCD_RAM = (LCD_RegValue>>8);
   LCD->LCD_RAM = LCD_RegValue;
 }
 
@@ -982,6 +990,7 @@ void LCD_WriteRAM_Prepare(void)
 void LCD_WriteRAM(uint16_t RGB_Code)
 {
   /* Write 16-bit GRAM Reg */
+  LCD->LCD_RAM = RGB_Code>>8;
   LCD->LCD_RAM = RGB_Code;
 }
 
@@ -1115,8 +1124,8 @@ void LCD_FSMCConfig(void)
   FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM4;
   FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
   FSMC_NORSRAMInitStructure.FSMC_MemoryType = FSMC_MemoryType_SRAM;
-//  FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
-  FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
+  FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
+//  FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_8b;
   FSMC_NORSRAMInitStructure.FSMC_BurstAccessMode = FSMC_BurstAccessMode_Disable;
   FSMC_NORSRAMInitStructure.FSMC_AsynchronousWait = FSMC_AsynchronousWait_Disable;  
   FSMC_NORSRAMInitStructure.FSMC_WaitSignalPolarity = FSMC_WaitSignalPolarity_Low;
@@ -1183,3 +1192,14 @@ static void delay(vu32 nCount)
   */  
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+
+
+void LCD_WriteReg2(void)
+{
+  LCD->LCD_REG = 0x02;
+}
+void LCD_WritePoint(uint16_t color)
+{
+  LCD->LCD_RAM = color>>8;
+  LCD->LCD_RAM = color;
+}

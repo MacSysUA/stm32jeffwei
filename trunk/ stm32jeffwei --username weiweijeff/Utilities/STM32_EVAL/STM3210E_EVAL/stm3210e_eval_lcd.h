@@ -48,6 +48,10 @@
   * @{
   */ 
 
+   
+   
+   
+   
 /** @defgroup STM3210E_EVAL_LCD_Exported_Types
   * @{
   */
@@ -329,6 +333,9 @@ void LCD_DisplayOff(void);
 void LCD_CtrlLinesConfig(void);
 void LCD_FSMCConfig(void);
 
+
+void LCD_WriteReg2(void);
+void LCD_WritePoint(uint16_t color);
 
 
 
