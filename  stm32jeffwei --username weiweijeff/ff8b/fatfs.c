@@ -3,6 +3,7 @@
 #include "fatfs.h"
 #include "ff.h"
 #include "stdlib.h"
+#include "stm3210e_eval_lcd.h"
 char buffer[512]={0,0,0,0};
 
 void list_file(void)
@@ -351,4 +352,54 @@ void write_buffer(const TCHAR *write_file,char *write_buffer,uint16_t n_write, u
     }
   }
   f_mount(0,NULL);
+}
+
+/************************************************************************/
+//函数名称:void write_CN16(u16 x,u16 y,uc8 *p,u16 charColor,u16 bkColor)
+//用途:液晶屏上坐标x,y写16*16汉字
+//返回:无
+//用法:write_CN16(10,12,"哦",Red,Blue)
+/************************************************************************/
+void write_CN16(u16 x,u16 y,uc8 *p,u16 charColor,u16 bkColor)
+{
+  unsigned char region   = *p-0xa0;//得到区号  gb2312
+  unsigned char location = *(p+1)-0xa0;//得到位号
+  uint32_t index = (94*(region-1)+location-1)*32;//地址偏移量
+  printf("-%u,%u,%u-",region,location,index);
+  
+  int i,n;
+  FATFS fs;
+  FIL	file;
+  FRESULT res;
+  DIR dirs;
+  FILINFO finfo;
+  u8 buffer[32]={0};
+  uint32_t re;
+  res = f_mount(0,&fs);
+  res = f_opendir(&dirs,(const TCHAR*)"/");//打开根目录
+  res = f_open(&file,(const TCHAR*)"Chinese16.FON",FA_READ);//打开在根目录的字库
+  res = f_lseek (&file, index);//设置偏移量
+  res = f_read(&file,buffer,32,&re);//读出32字节字模数据
+  LCD_WriteReg(0,x); // .............. CUR_Y
+  LCD_WriteReg(1,y); // .............. CUR_X
+  LCD_WriteReg(3,x+15); // ............ END_X
+  
+  LCD_WriteReg2(); // .............. PIXELS
+  for(n=0;n<32;n++)
+  {
+    for (i = 0; i < 8; i++)//前半行
+      {
+        if (buffer[n] & (0x01<<i))
+        {
+          LCD_WritePoint(charColor);//写有效点
+        }
+        else
+        {
+          LCD_WritePoint(bkColor);//写底色
+        }
+      }
+  }
+  f_close(&file);
+  f_mount(0,NULL);
+
 }

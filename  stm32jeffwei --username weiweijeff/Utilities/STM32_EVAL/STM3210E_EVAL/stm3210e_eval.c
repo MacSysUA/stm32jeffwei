@@ -362,7 +362,7 @@ void STM_EVAL_COMInit(COM_TypeDef COM, USART_InitTypeDef* USART_InitStruct)
   /* Enable USART */
   USART_Cmd(COM_USART[COM], ENABLE);
 }
-
+#if 1
 /**
   * @brief  DeInitializes the SDIO interface.
   * @param  None
@@ -496,6 +496,7 @@ void SD_LowLevel_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize)
   DMA_Cmd(DMA2_Channel4, ENABLE); 
 }
 
+
 /**
   * @brief  Returns the DMA End Of Transfer Status.
   * @param  None
@@ -505,7 +506,7 @@ uint32_t SD_DMAEndOfTransferStatus(void)
 {
   return (uint32_t)DMA_GetFlagStatus(DMA2_FLAG_TC4);
 }
-
+#endif
 /**
   * @brief  DeInitializes the peripherals used by the SPI FLASH driver.
   * @param  None

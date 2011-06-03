@@ -29,4 +29,12 @@ void format_disk(
                  );
 
 
+
+
+void write_CN16(u16 x,u16 y,uc8 *p,u16 charColor,u16 bkColor);
+
+
+
+
+
 #endif
