@@ -121,75 +121,49 @@ int main(void)
   
 
   
-  //  printf("\n\r%u",ADC_GetConversionValue(ADC1));
-//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
-
-  /* Configure FSMC Bank1 NOR/SRAM2 */
-//  NOR_Init();
- 
-  /* Read NOR memory ID */
-//  NOR_ReadID(&NOR_ID);
-
-//  NOR_ReturnToReadMode();
-  /* FSMC Initialization */
-//  NAND_Init();
-
-  /* Read OneNAND memory ID */
-//  NAND_ReadID(&NAND_ID);  
-//    printf("\n\r-Maker_ID=%x-\n\r",NAND_ID.Maker_ID);
-//    printf("\n\r-Device_ID=%x-\n\r",NAND_ID.Device_ID);
-  
   
   
 //  format_disk(0,0,512);
   get_disk_info();
-  list_file();
+//  list_file();
 //  str=read_file("/","test.txt",0,32);
 //  printf("\n\r");
 //  printf(str);
-  delete_file("/","test.txt");
-  creat_file("test.txt");  
+//  delete_file("/","test.txt");
+//  creat_file("test.txt");  
 //  delete_file("/","hello.txt");
 //  creat_file("hello.txt");
 //  delay();
 //  edit_file("/","hello.txt","creat_file is ok!",0x00);
-  str=read_file("/","test.txt",0x00,512);
+//  str=read_file("/","test.txt",0x00,512);
   printf("\n\r");
-  printf(str);
-  printf("\n\r");
+//  printf(str);
+//  printf("\n\r");
   
-  list_file();
-
+//  list_file();
   
-
- STM3210E_LCD_Init();
- LCD_Clear(LCD_COLOR_BLACK);
- 
- write_CN16(100,100,"土",0x0000,0xffff);
- int i,n;
-//  u8 buffer[32]={0x00,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x08,0x7F,0xFC,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x04,0xFF,0xFE,0x00,0x00,0x00,0x00};
-    u8 buffer[32]={0x00,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x10,0xFE,0x3F,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x20,0xFF,0x7F,0x00,0x00,0x00,0x00};/*"土",4168*/
   
-  LCD_WriteReg(0,200); // .............. CUR_Y
-  LCD_WriteReg(1,200); // .............. CUR_X
-  LCD_WriteReg(3,215); // ............ END_X
   
-  LCD_WriteReg2(); // .............. PIXELS
-  for(n=0;n<32;n++)
+  
+  STM3210E_LCD_Init();
+#if 1
+  uint16_t colour=4096;
+  while(colour!=0)
   {
-    for (i = 0; i < 8; i++)//前半行
-      {
-        if (buffer[n] & (0x01<<i))
-        {
-          LCD_WritePoint(LCD_COLOR_BLUE);//写有效点
-        }
-        else
-        {
-          LCD_WritePoint(LCD_COLOR_CYAN);//写底色
-        }
-      }
+    LCD_Clear(colour);
+    colour-=512;
   }
-  
+#endif
+  LCD_Clear(LCD_COLOR_BLUE);
+
+  LCD_DrawUniLine(0,0,799,479,0xaaaa);
+  LCD_DrawUniLine(0,479,799,0,0xaaaa);
+  LCD_DrawFullRect(100,200,500,300,LCD_COLOR_RED,0);
+//  LCD_str(0,100,"nice to meet you!你好",12,0xaaaa,0x00ff);
+  LCD_str(0,200,"我现在正在做一个项目，要用到STM32F103C8中的AD，由于48引脚的STM32片子中没有外接的VREF，所以现在为了使得AD转换稳定，我想通过精密芯片提高模拟电源的精度和稳定性，请问各位大侠又没用用过这方面的精密的芯片啊~最好是可以将5V转换成精密的3.3V电源的~推荐一下呗~谢谢了~",16,0xaaaa,0x00ff);
+//  LCD_str(0,300,"nice to meet you!你好",24,0xaaaa,0x00ff);
+  LCD_DrawFullCircle( 400,  240,  3,  0xaaaa, 1);
+
   
   
     /* To achieve GPIO toggling maximum frequency, the following  sequence is mandatory. 

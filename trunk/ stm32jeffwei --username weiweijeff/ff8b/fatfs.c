@@ -4,7 +4,7 @@
 #include "ff.h"
 #include "stdlib.h"
 #include "stm3210e_eval_lcd.h"
-char buffer[512]={0,0,0,0};
+char buffer[512]={0};
 
 void list_file(void)
 {
@@ -131,7 +131,7 @@ void get_disk_info(void)
 void format_disk(
                  BYTE drv,			/* Logical drive number */
                  BYTE partition,		/* Partitioning rule 0:FDISK, 1:SFD */
-                 WORD allocsize		/* Allocation unit size [bytes] */
+                 WORD allocsize		/* Allocation unit size [bytes]={0} */
                  )
 {
 	FATFS fs;
@@ -358,48 +358,331 @@ void write_buffer(const TCHAR *write_file,char *write_buffer,uint16_t n_write, u
 //函数名称:void write_CN16(u16 x,u16 y,uc8 *p,u16 charColor,u16 bkColor)
 //用途:液晶屏上坐标x,y写16*16汉字
 //返回:无
-//用法:write_CN16(10,12,"哦",Red,Blue)
+//用法:write_CN16(10,12,"哦",16,Red,Blue)
 /************************************************************************/
-void write_CN16(u16 x,u16 y,uc8 *p,u16 charColor,u16 bkColor)
+void LCD_CN(u16 x,u16 y,uc8 *p,uint8_t fon, u16 charColor,u16 bkColor)
 {
   unsigned char region   = *p-0xa0;//得到区号  gb2312
   unsigned char location = *(p+1)-0xa0;//得到位号
-  uint32_t index = (94*(region-1)+location-1)*32;//地址偏移量
-  printf("-%u,%u,%u-",region,location,index);
+  uint32_t index;//地址偏移量  
+  uint16_t i,n,end_x;
   
-  int i,n;
   FATFS fs;
   FIL	file;
   FRESULT res;
   DIR dirs;
-  FILINFO finfo;
   u8 buffer[32]={0};
   uint32_t re;
   res = f_mount(0,&fs);
   res = f_opendir(&dirs,(const TCHAR*)"/");//打开根目录
-  res = f_open(&file,(const TCHAR*)"Chinese16.FON",FA_READ);//打开在根目录的字库
-  res = f_lseek (&file, index);//设置偏移量
-  res = f_read(&file,buffer,32,&re);//读出32字节字模数据
-  LCD_WriteReg(0,x); // .............. CUR_Y
-  LCD_WriteReg(1,y); // .............. CUR_X
-  LCD_WriteReg(3,x+15); // ............ END_X
-  
-  LCD_WriteReg2(); // .............. PIXELS
-  for(n=0;n<32;n++)
+  switch(fon)
   {
-    for (i = 0; i < 8; i++)//前半行
+  case 12:
+    {
+      index = (94*(region-1)+location-1)*24;//地址偏移量  
+      end_x=x+11;
+      res = f_open(&file,(const TCHAR*)"Chinese12.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,24,&re);//
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<24;n++)
       {
-        if (buffer[n] & (0x01<<i))
+        for (i = 0; i < 8; i++)//
         {
-          LCD_WritePoint(charColor);//写有效点
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
         }
-        else
+        for (i = 0; i < 4; i++)//
         {
-          LCD_WritePoint(bkColor);//写底色
+          if (buffer[n+1] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+        n+=1;
+      }
+    }
+    break;
+  case 16:
+    {
+      index = (94*(region-1)+location-1)*32;//地址偏移量  
+      end_x=x+15;
+      res = f_open(&file,(const TCHAR*)"Chinese16.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,32,&re);//读出32字节字模数据
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<32;n++)
+      {
+        for (i = 0; i < 8; i++)//
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
         }
       }
+    }
+    break;
+  case 24:
+    {
+      index = (94*(region-1)+location-1)*72;//地址偏移量  
+      end_x=x+23;
+      res = f_open(&file,(const TCHAR*)"Chinese24.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,72,&re);//
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<72;n++)
+      {
+        for (i = 0; i < 8; i++)//
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }        
+      }
+    }
+    break;
+  case 32:
+    {
+      index = (94*(region-1)+location-1)*128;//地址偏移量  
+      end_x=x+31;
+      res = f_open(&file,(const TCHAR*)"Chinese32.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,128,&re);//读出32字节字模数据
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<128;n++)
+      {
+        for (i = 0; i < 8; i++)//
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+      }
+    }
+    break;
+  default:break;
   }
+  
   f_close(&file);
   f_mount(0,NULL);
+}
 
+
+
+
+
+void LCD_ASCII(u16 x,u16 y,u8 p,uint8_t fon, u16 charColor,u16 bkColor)
+{
+  
+  uint32_t index;//地址偏移量  
+  uint16_t i,n,end_x;
+  FATFS fs;
+  FIL	file;
+  FRESULT res;
+  DIR dirs;
+  uint32_t re;
+  res = f_mount(0,&fs);
+  res = f_opendir(&dirs,(const TCHAR*)"/");//打开根目录
+  
+  
+  
+  switch(fon)
+  {
+  case 12:
+    {
+      u8 buffer[12]={0};
+      index = p*12;
+      end_x=x+5;
+      res = f_open(&file,(const TCHAR*)"ASCII12.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,12,&re);//读出32字节字模数据
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<12;n++)
+      {
+        for (i = 0; i < 6; i++)
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+      }
+    }
+    break;
+  case 16:
+    {
+      u8 buffer[16]={0};
+      index = p*16;
+      end_x=x+7;
+      res = f_open(&file,(const TCHAR*)"ASCII16.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,16,&re);//读出32字节字模数据
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<16;n++)
+      {
+        for (i = 0; i < 8; i++)
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+      }
+    }
+    break;
+  case 24:
+    {
+      u8 buffer[48]={0};
+      index = p*48;
+      end_x=x+11;
+      res = f_open(&file,(const TCHAR*)"ASCII24.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,48,&re);//读出32字节字模数据
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<48;n++)
+      {
+        for (i = 0; i < 8; i++)
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+        for (i = 0; i < 4; i++)
+        {
+          if (buffer[n+1] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+        n+=1;
+      }
+    }
+    break;
+  case 32:
+    {
+      u8 buffer[64]={0};
+      index = p*64;
+      end_x=x+15;
+      res = f_open(&file,(const TCHAR*)"ASCII32.FON",FA_READ);//打开在根目录的字库
+      res = f_lseek (&file, index);//设置偏移量
+      res = f_read(&file,buffer,64,&re);//读出32字节字模数据
+      LCD_WriteReg(CUR_X,x); // .............. CUR_x
+      LCD_WriteReg(CUR_Y,y); // .............. CUR_y
+      LCD_WriteReg(END_X,end_x); // ............ END_X
+      LCD_WriteRAM_Prepare(); // .............. PIXELS
+      for(n=0;n<64;n++)
+      {
+        for (i = 0; i < 8; i++)
+        {
+          if (buffer[n] & (0x01<<i))
+          {
+            LCD_WritePoint(charColor);//写有效点
+          }
+          else
+          {
+            LCD_WritePoint(bkColor);//写底色
+          }
+        }
+      }
+    }
+    break;
+    
+    
+  default:break;
+  }
+  
+  f_close(&file);
+  f_mount(0,NULL);
+}
+
+
+void LCD_str(u16 x, u16 y, unsigned char *str, uint8_t fon, u16 Color, u16 bkColor)
+{
+  while (*str)
+  {
+    if((x+fon)>799)//一行写满了
+    {
+      x=0;
+      y+=fon;
+    }
+    if((y+fon)>479)//整屏写满了
+    {
+      y=0;
+    }
+    if (*str < 128)
+    {
+      LCD_ASCII(x,y,*str,fon,Color,bkColor);
+      x=x+fon/2;
+      str+=1;
+    }
+    else
+    {
+      LCD_CN(x,y,str,fon,Color,bkColor);
+      x+= fon;
+      str+=2;
+    }    
+  }
 }
