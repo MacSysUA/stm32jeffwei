@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "stm3210e_eval_fsmc_nand.h"
 #include "stm3210e_eval_lcd.h"
+#include "touch.h"
 #include "fatfs.h"
 #include "ff.h"
 #include <assert.h>
@@ -54,6 +55,7 @@ uint8_t *busy_buffer1,*busy_buffer2,*free_buffer1,*free_buffer2;
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
 void NVIC_Configuration(void);
+void EXTI_Config(void);
 void SetSysClockTo72(void);
 void USART1_Rx_DMA_Config(void);
 void USART2_Rx_DMA_Config(void);
@@ -103,7 +105,8 @@ int main(void)
   
        
   SetSysClockTo72();
-  NVIC_Configuration();  
+  NVIC_Configuration();
+  Touch_Config();
   busy_buffer1=rx_buffer1a;
   USART1_Rx_DMA_Config();
   busy_buffer2=rx_buffer2a;
@@ -112,8 +115,8 @@ int main(void)
   USART2_Init();
   LED_GPIO_Configuration();
   TIM2_Config();
-  TIM3_Config();
-  
+  TIM3_Config();   
+  EXTI_Config();
 //  ADC1_DMA_Config();
 //  ADC1_GPIO_Config();
 //  ADC1_Config();
@@ -418,6 +421,7 @@ void NVIC_Configuration(void)
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   
   NVIC_InitTypeDef NVIC_InitStructure;
+#if 1
   /* Enable the USART1 Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
@@ -472,8 +476,25 @@ void NVIC_Configuration(void)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+#endif  
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //使用外部中断
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//阶级0
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;		 //阶层0
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;  
+  NVIC_Init(&NVIC_InitStructure);
 }
 
+void EXTI_Config(void)
+{
+  EXTI_InitTypeDef EXTI_InitStructure;
+  EXTI_InitStructure.EXTI_Line = EXTI_Line10;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+  // Configure EXTI Line10 to generate an interrupt on falling edge
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+  EXTI_GenerateSWInterrupt(EXTI_Line10);
+}
 
 void USART1_Rx_DMA_Config(void)
 {
@@ -596,4 +617,5 @@ void LED_GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
+
 

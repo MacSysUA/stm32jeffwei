@@ -27,6 +27,10 @@
 #include "stdio.h"
 #include "fatfs.h"
 #include "stm32f10x_adc.h"
+#include "stm3210e_eval_lcd.h"
+#include "touch.h"
+
+
 
 uint32_t timer=0;
 uint8_t last_data1_flag=0;    
@@ -64,6 +68,10 @@ extern vu16 ADCConvertedValue;
   * @param  None
   * @retval None
   */
+void TP_EXTI_DISABLE(void);
+void TP_EXTI_ENABLE(void);
+
+
 void NMI_Handler(void)
 {
 }
@@ -269,6 +277,34 @@ void ADC1_2_IRQnHandler(void)
 //    printf("\n\r%u",ADC_GetConversionValue(ADC1));
   }
 }
+
+//外部中断服务程序
+void EXTI15_10_IRQHandler(void)
+{
+  TP_EXTI_DISABLE();
+  EXTI_ClearITPendingBit(EXTI_Line10);//清除中断标志位   
+  GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
+  printf("x=%u,y=%u\n\r",TPReadX(),TPReadY());
+//  DrawPixel(GUI_TOUCH_X_MeasureX(),GUI_TOUCH_X_MeasureY(),0xaaaa);
+//printf("%d\t%d\r",GUI_TOUCH_X_MeasureX(),GUI_TOUCH_X_MeasureY());
+//printf("hello\n\t");
+  TP_EXTI_ENABLE();
+    
+}
+
+
+
+
+void TP_EXTI_DISABLE(void)
+{
+  (*((uint32_t*)0x40010400))=(*((uint32_t*)0x40010400))&~(1<<10);
+}
+void TP_EXTI_ENABLE(void)
+{
+  (*((uint32_t*)0x40010400))=(*((uint32_t*)0x40010400))|1<<10;
+}
+
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
