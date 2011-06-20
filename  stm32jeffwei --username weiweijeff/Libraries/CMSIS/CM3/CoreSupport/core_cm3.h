@@ -1081,7 +1081,7 @@ static __INLINE  void __CLREX()                   { __ASM ("clrex"); }
  *
  * Return the actual process stack pointer
  */
-extern uint32_t __get_PSP(void);
+//extern uint32_t __get_PSP(void);
 
 /**
  * @brief  Set the Process Stack Pointer
@@ -1091,7 +1091,7 @@ extern uint32_t __get_PSP(void);
  * Assign the value ProcessStackPointer to the MSP 
  * (process stack pointer) Cortex processor register
  */
-extern void __set_PSP(uint32_t topOfProcStack);
+//extern void __set_PSP(uint32_t topOfProcStack);
 
 /**
  * @brief  Return the Main Stack Pointer
@@ -1101,7 +1101,7 @@ extern void __set_PSP(uint32_t topOfProcStack);
  * Return the current value of the MSP (main stack pointer)
  * Cortex processor register
  */
-extern uint32_t __get_MSP(void);
+//extern uint32_t __get_MSP(void);
 
 /**
  * @brief  Set the Main Stack Pointer
@@ -1111,7 +1111,7 @@ extern uint32_t __get_MSP(void);
  * Assign the value mainStackPointer to the MSP 
  * (main stack pointer) Cortex processor register
  */
-extern void __set_MSP(uint32_t topOfMainStack);
+//extern void __set_MSP(uint32_t topOfMainStack);
 
 /**
  * @brief  Reverse byte order in unsigned short value
@@ -1121,7 +1121,7 @@ extern void __set_MSP(uint32_t topOfMainStack);
  *
  * Reverse byte order in unsigned short value
  */
-extern uint32_t __REV16(uint16_t value);
+//extern uint32_t __REV16(uint16_t value);
 
 /**
  * @brief  Reverse bit order of value
@@ -1131,7 +1131,7 @@ extern uint32_t __REV16(uint16_t value);
  *
  * Reverse bit order of value
  */
-extern uint32_t __RBIT(uint32_t value);
+//extern uint32_t __RBIT(uint32_t value);
 
 /**
  * @brief  LDR Exclusive (8 bit)
@@ -1172,7 +1172,7 @@ extern uint32_t __LDREXW(uint32_t *addr);
  *
  * Exclusive STR command for 8 bit values
  */
-extern uint32_t __STREXB(uint8_t value, uint8_t *addr);
+//extern uint32_t __STREXB(uint8_t value, uint8_t *addr);
 
 /**
  * @brief  STR Exclusive (16 bit)
@@ -1183,7 +1183,7 @@ extern uint32_t __STREXB(uint8_t value, uint8_t *addr);
  *
  * Exclusive STR command for 16 bit values
  */
-extern uint32_t __STREXH(uint16_t value, uint16_t *addr);
+//extern uint32_t __STREXH(uint16_t value, uint16_t *addr);
 
 /**
  * @brief  STR Exclusive (32 bit)

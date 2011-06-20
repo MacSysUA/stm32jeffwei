@@ -5,41 +5,29 @@
 //把下面这段复制到主程序
 /**************************************************************************/
 //  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 //  TIM_TimeBaseStructure.TIM_Period = 1;                 //自动装载
 //  TIM_TimeBaseStructure.TIM_Prescaler = 72;       //72M分频率到1MHz
 //  TIM_TimeBaseStructure.TIM_ClockDivision = 0;   
 //  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Down;  //向下计数
-//  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+//  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 /**************************************************************************/
+uint8_t Temperature[5]="00.0";
+
 void delay_nus(vu32 nCount)
 {
   u16 TIMCounter = nCount;
-  TIM_Cmd(TIM2, ENABLE);
-  TIM_SetCounter(TIM2, TIMCounter);
+  TIM_Cmd(TIM4, ENABLE);
+  TIM_SetCounter(TIM4, TIMCounter);
   while (TIMCounter)
   {
-    TIMCounter = TIM_GetCounter(TIM2);
+    TIMCounter = TIM_GetCounter(TIM4);
   }
-  TIM_Cmd(TIM2, DISABLE);
+  TIM_Cmd(TIM4, DISABLE);
 }
 
 /*******************************************************************************
 *******************************************************************************/
-
-void DS18B20_init(void)
-{
-    GPIO_InitTypeDef GPIO_InitStructure;
-
-        // PC9-DQ
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-
-    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(DS18B20_PORT, &GPIO_InitStructure);
-}
-
 //单总线上的所有处理均从初始化开始
 void init_1820()  
 {  
@@ -55,6 +43,21 @@ void init_1820()
     SET_OP_1WIRE();  
     delay_nus(100);   //60~240us  
 }
+
+void DS18B20_init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+        // PA8-DQ
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin =  DS18B20_BIT;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(DS18B20_PORT, &GPIO_InitStructure);
+}
+
+
 /*
 指令                    代码
 Read ROM(读ROM)         [33H]
@@ -133,5 +136,10 @@ u16 DS18B20_Read(void)                   //读取温度值
     write_1820(0xbe);  
     res=read_1820();  //读数据  
     res+=(u16)read_1820()<<8;  
+    Temperature[0]=res/160+'0';
+    Temperature[1]=res/16%10+'0';
+    Temperature[2]='.';
+    Temperature[3]=res*10/16%10+'0';
+    Temperature[4]='\0';
     return res;
 }

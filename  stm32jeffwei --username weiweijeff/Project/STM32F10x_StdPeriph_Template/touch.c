@@ -1,26 +1,7 @@
 
 #include "touch.h"
 
-void Touch_GPIO_Config(void)
-{ 
-  GPIO_InitTypeDef  GPIO_InitStructure;
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  
-  //Configure TP_PINS:TP_CS PF10
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; 
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   //推挽输出
-  GPIO_Init(GPIOF,&GPIO_InitStructure);	 
-  
-  /***PB10->TOUCH-INT***/
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz; 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  
-  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource10);//PC5作为外部中断引 
 
-}
 
 void Touch_Config(void) 
 { 
@@ -28,7 +9,7 @@ void Touch_Config(void)
   //GPIOC AFIO clock enable
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOF | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
   //SPI1 Remap enable
-  GPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE );
+//  GPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE );
 
   //Configure SPI1 pins: SCK and MOSI 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5|GPIO_Pin_7; 
@@ -47,14 +28,15 @@ void Touch_Config(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   //推挽输出
   GPIO_Init(GPIOF,&GPIO_InitStructure);	
-  GPIO_SetBits(GPIOF,GPIO_Pin_10);
+ 
   
   /***PB10->TOUCH-INT***/
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-  
+  GPIO_SetBits(GPIOB,GPIO_Pin_10);
+   
   GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource10);//PB10作为外部中断引 
 
   // SPI1 Config
@@ -69,7 +51,7 @@ void Touch_Config(void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; 
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;   //SPI_NSS_Hard
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64; 
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128; 
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; 
   SPI_InitStructure.SPI_CRCPolynomial = 7; 
   SPI_Init(SPI1,&SPI_InitStructure); 
@@ -101,7 +83,7 @@ void SpiDelay(unsigned int DelayCnt)
  for(i=0;i<DelayCnt;i++);
 }
 
-u16 TPReadX(void)
+int16_t TPReadX(void)
 { 
    u16 x=0;
    TP_CS();
@@ -117,7 +99,7 @@ u16 TPReadX(void)
    return (x);
 }
 
-u16 TPReadY(void)
+int16_t TPReadY(void)
 {
   u16 y=0;
   TP_CS();
@@ -134,67 +116,80 @@ u16 TPReadY(void)
 }
 
 
-int  GUI_TOUCH_X_MeasureX(void) 
+int16_t  TP_MeasureX(void) 
 {
-	unsigned char t=0,t1,count=0;
-	unsigned short int databuffer[10]={5,7,9,3,2,6,4,0,3,1};//数据组
-	unsigned short temp=0,X=0;	
- 	
-	while(/*GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)==0&&*/count<10)//循环读数10次
-	{	   	  
-		databuffer[count]=TPReadX();
-		count++; 
-	}  
-	if(count==10)//一定要读到10次数据,否则丢弃
-	{  
-	    do//将数据X升序排列
-		{	
-			t1=0;		  
-			for(t=0;t<count-1;t++)
-			{
-				if(databuffer[t]>databuffer[t+1])//升序排列
-				{
-					temp=databuffer[t+1];
-					databuffer[t+1]=databuffer[t];
-					databuffer[t]=temp;
-					t1=1; 
-				}  
-			}
-		}while(t1); 	    		 	 		  
-		//X=(databuffer[3]+databuffer[4]+databuffer[5])/3;
-            X=(int)(((databuffer[3]+databuffer[4]+databuffer[5])/3-352)*0.08956);
-	}
-	return(X);  
+  unsigned char t=0,t1,count=0;
+  int16_t databuffer[16]={0};//数据组
+  int16_t temp=0,X=0;
+  uint32_t sum=0;
+  while(/*GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)==0&&*/count<16)//循环读数10次
+  {
+    databuffer[count]=TPReadX();
+    count++;
+  }
+  if(count==16)//一定要读到10次数据,否则丢弃
+  {
+    do//将数据X升序排列
+    {
+      t1=0;
+      for(t=0;t<count-1;t++)
+      {
+        if(databuffer[t]>databuffer[t+1])//升序排列
+        {
+          temp=databuffer[t+1];
+          databuffer[t+1]=databuffer[t];
+          databuffer[t]=temp;
+          t1=1;
+        }
+      }
+    }
+    while(t1);
+    for(t=4;t<12;t++)
+    {
+      sum+=databuffer[t];
+    }
+    //X=sum/8;
+    X=799-(int16_t)((sum/8-210)*0.2130);
+  }
+  return(X);  
 }
 
-int  GUI_TOUCH_X_MeasureY(void) {
-  	unsigned char t=0,t1,count=0;
-	unsigned short int databuffer[10]={5,7,9,3,2,6,4,0,3,1};//数据组
-	unsigned short temp=0,Y=0;	
- 
-    while(/*GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)==0&&*/count<10)	//循环读数10次
-	{	   	  
-		databuffer[count]=TPReadY();
-		count++;  
-	}  
-	if(count==10)//一定要读到10次数据,否则丢弃
-	{  
-	    do//将数据X升序排列
-		{	
-			t1=0;		  
-			for(t=0;t<count-1;t++)
-			{
-				if(databuffer[t]>databuffer[t+1])//升序排列
-				{
-					temp=databuffer[t+1];
-					databuffer[t+1]=databuffer[t];
-					databuffer[t]=temp;
-					t1=1; 
-				}  
-			}
-		}while(t1); 	    		 	 		  
-		//Y=(databuffer[3]+databuffer[4]+databuffer[5])/3;	
-            Y=(int)(((databuffer[3]+databuffer[4]+databuffer[5])/3-258)*0.0671);
-	}
-	return(Y); 
+int16_t  TP_MeasureY(void) 
+{
+  unsigned char t=0,t1,count=0;
+  int16_t databuffer[16]={0};//数据组
+  int16_t temp=0,Y=0;
+  uint32_t sum=0;
+  while(/*GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)==0&&*/count<16)	//循环读数10次
+  {
+    databuffer[count]=TPReadY();
+    count++;
+  }
+  if(count==16)//一定要读到10次数据,否则丢弃
+  {
+    do//将数据X升序排列
+    {
+      t1=0;
+      for(t=0;t<count-1;t++)
+      {
+        if(databuffer[t]>databuffer[t+1])//升序排列
+        {
+          temp=databuffer[t+1];
+          databuffer[t+1]=databuffer[t];
+          databuffer[t]=temp;
+          t1=1; 
+        }
+      }
+    }
+    while(t1);
+    for(t=4;t<12;t++)
+    {
+      sum+=databuffer[t];
+    }
+    //Y=sum/8;
+    Y=(int16_t)((sum/8-340)*0.13575);
+  }
+  return(Y); 
 }
+
+
