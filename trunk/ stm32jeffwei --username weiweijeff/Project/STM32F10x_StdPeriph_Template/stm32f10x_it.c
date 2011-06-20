@@ -29,8 +29,10 @@
 #include "stm32f10x_adc.h"
 #include "stm3210e_eval_lcd.h"
 #include "touch.h"
+#include <stdlib.h>
 
-
+uint8_t tp_flag=0;
+uint16_t tp_x[5],tp_y[5],x,y;
 
 uint32_t timer=0;
 uint8_t last_data1_flag=0;    
@@ -192,7 +194,7 @@ void USART1_IRQHandler(void)
   USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);  
   USART_ClearITPendingBit(USART1,USART_IT_RXNE);
 //  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-  TIM_Cmd(TIM2, ENABLE);
+  //TIM_Cmd(TIM2, ENABLE);
 //  GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)0x01);
 //  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 //  TIM2->CNT = 0 ;
@@ -211,8 +213,9 @@ void TIM2_IRQHandler(void)
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 //    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 //    TIM_Cmd(TIM2, DISABLE);
-    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
+//    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_6)));
 //    GPIO_WriteBit(GPIOF, GPIO_Pin_6, (BitAction)0x00);
+#if 0
     if(last_data1_flag)
     {
       uint8_t n=512-DMA_GetCurrDataCounter(DMA1_Channel5);
@@ -221,6 +224,11 @@ void TIM2_IRQHandler(void)
       last_data1_flag=0;
       printf("\n\r-%u-\n\r",file1_index);
     }
+#endif
+    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_10)==0)
+    {
+      TIM_Cmd(TIM3, ENABLE);
+    }    
     
   }
    
@@ -228,8 +236,62 @@ void TIM2_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-  GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
+  
+  if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_10)==0)
+  {
+    if(tp_flag<4)
+    {
+      tp_x[tp_flag]=TP_MeasureX();
+      tp_y[tp_flag]=TP_MeasureY();
+      if((-10<(tp_x[tp_flag]-tp_x[tp_flag-1])<10)&&(-10<(tp_y[tp_flag]-tp_y[tp_flag-1])<10))
+      {tp_flag+=1;}
+      else
+      {tp_flag=0;}
+    }
+    else
+    {
+      tp_flag=0;
+      TIM_Cmd(TIM3, DISABLE);
+     
+      u16 j=0,i=0;
+      uint16_t sum_x=0,sum_y=0,temp=0;
+#if 1 
+      for(j=0;j<=4;j++)
+      {
+        for (i=0;i<4-j;i++)
+        {
+          if (tp_x[i]>tp_x[i+1])
+          {
+            temp=tp_x[i];
+            tp_x[i]=tp_x[i+1];
+            tp_x[i+1]=temp;
+          }
+        }
+      }
+      for(j=0;j<=4;j++)
+      {
+        for (i=0;i<4-j;i++)
+        {
+          if (tp_y[i]>tp_y[i+1])
+          {
+            temp=tp_y[i];
+            tp_y[i]=tp_y[i+1];
+            tp_y[i+1]=temp;
+          }
+        }
+      }
+#endif      
+      x=(tp_x[1]+tp_x[2]+tp_x[3])/3;
+      y=(tp_y[1]+tp_y[2]+tp_y[3])/3;
+      printf("x=%u\ty=%u\r\n",x,y);
+     if((x<800)&&(y<479))
+     {
+       LCD_DrawFullCircle(x,y,3,1,0xaaaa);
+     }
+    }
+  }
 }
+
 
 void DMA1_Channel5_IRQHandler(void)
 {
@@ -283,13 +345,11 @@ void EXTI15_10_IRQHandler(void)
 {
   TP_EXTI_DISABLE();
   EXTI_ClearITPendingBit(EXTI_Line10);//清除中断标志位   
-  GPIO_WriteBit(GPIOF, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOF, GPIO_Pin_7)));
-  printf("x=%u,y=%u\n\r",TPReadX(),TPReadY());
+  printf("%u,%u\r\n",TPReadX(),TPReadY());
 //  DrawPixel(GUI_TOUCH_X_MeasureX(),GUI_TOUCH_X_MeasureY(),0xaaaa);
 //printf("%d\t%d\r",GUI_TOUCH_X_MeasureX(),GUI_TOUCH_X_MeasureY());
 //printf("hello\n\t");
-  TP_EXTI_ENABLE();
-    
+  TP_EXTI_ENABLE();    
 }
 
 

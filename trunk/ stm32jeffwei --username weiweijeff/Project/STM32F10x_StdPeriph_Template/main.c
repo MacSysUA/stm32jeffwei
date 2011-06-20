@@ -32,6 +32,8 @@
 #include "queue.h"
 #include "ADC.h"
 #include "LCD7.h"
+#include "ds18b20.h"
+
 /**
   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
@@ -107,23 +109,30 @@ int main(void)
   SetSysClockTo72();
   NVIC_Configuration();
   Touch_Config();
-  busy_buffer1=rx_buffer1a;
-  USART1_Rx_DMA_Config();
-  busy_buffer2=rx_buffer2a;
-  USART2_Rx_DMA_Config();
+  //busy_buffer1=rx_buffer1a;
+  //USART1_Rx_DMA_Config();
+  //busy_buffer2=rx_buffer2a;
+  //USART2_Rx_DMA_Config();
   USART1_Init();
-  USART2_Init();
+  //USART2_Init();
   LED_GPIO_Configuration();
   TIM2_Config();
   TIM3_Config();   
-  EXTI_Config();
+//  EXTI_Config();
 //  ADC1_DMA_Config();
 //  ADC1_GPIO_Config();
 //  ADC1_Config();
   
   
-
-  
+  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  TIM_TimeBaseStructure.TIM_Period = 1;                 //自动装载
+  TIM_TimeBaseStructure.TIM_Prescaler = 72;       //72M分频率到1MHz
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;   
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Down;  //向下计数
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+  DS18B20_init();
+ 
   
   
 //  format_disk(0,0,512);
@@ -149,24 +158,38 @@ int main(void)
   
   
   STM3210E_LCD_Init();
-#if 1
+
   uint16_t colour=4096;
   while(colour!=0)
   {
     LCD_Clear(colour);
     colour-=512;
   }
-#endif
-  LCD_Clear(LCD_COLOR_BLUE);
+  #if 1
+  LCD_Clear(0xff);
 
   LCD_DrawUniLine(0,0,799,479,0xaaaa);
   LCD_DrawUniLine(0,479,799,0,0xaaaa);
-  LCD_DrawFullRect(100,200,500,300,LCD_COLOR_RED,0);
+  LCD_DrawUniLine(100,100,700,100,0xaaaa);
+  LCD_DrawUniLine(100,240,700,240,0xaaaa);
+  LCD_DrawUniLine(100,400,700,400,0xaaaa);
+  LCD_DrawUniLine(100,100,100,400,0xaaaa);
+  LCD_DrawUniLine(400,100,400,400,0xaaaa);
+  LCD_DrawUniLine(700,100,700,400,0xaaaa);
+//  LCD_DrawFullRect(100,200,500,300,LCD_COLOR_RED,0);
 //  LCD_str(0,100,"nice to meet you!你好",12,0xaaaa,0x00ff);
-  LCD_str(0,200,"我现在正在做一个项目，要用到STM32F103C8中的AD，由于48引脚的STM32片子中没有外接的VREF，所以现在为了使得AD转换稳定，我想通过精密芯片提高模拟电源的精度和稳定性，请问各位大侠又没用用过这方面的精密的芯片啊~最好是可以将5V转换成精密的3.3V电源的~推荐一下呗~谢谢了~",16,0xaaaa,0x00ff);
-//  LCD_str(0,300,"nice to meet you!你好",24,0xaaaa,0x00ff);
+//  LCD_str(0,300,"nice to meet you!你好",16,0xaaaa,0x00ff);
+  LCD_DrawFullCircle( 100,  100,  3,  0xaaaa, 1);
+  LCD_DrawFullCircle( 100,  240,  3,  0xaaaa, 1);  
+  LCD_DrawFullCircle( 100,  400,  3,  0xaaaa, 1);
+  LCD_DrawFullCircle( 400,  100,  3,  0xaaaa, 1);
   LCD_DrawFullCircle( 400,  240,  3,  0xaaaa, 1);
+  LCD_DrawFullCircle( 400,  400,  3,  0xaaaa, 1);
+  LCD_DrawFullCircle( 700,  100,  3,  0xaaaa, 1);  
+  LCD_DrawFullCircle( 700,  240,  3,  0xaaaa, 1);
+  LCD_DrawFullCircle( 700,  400,  3,  0xaaaa, 1);
 
+#endif
   
   
     /* To achieve GPIO toggling maximum frequency, the following  sequence is mandatory. 
@@ -177,7 +200,11 @@ int main(void)
   
   while (1)
   {
+    DS18B20_Convert();
     delay();
+    DS18B20_Read();
+    //printf(Temperature);
+    LCD_str(100, 100, Temperature, 16, LCD_COLOR_CYAN, LCD_COLOR_BLUE);
   }
 }
 
@@ -267,10 +294,10 @@ void SetSysClockTo72(void)
     RCC_HCLKConfig(RCC_SYSCLK_Div1); 
   
     /* PCLK2 = HCLK */
-    RCC_PCLK2Config(RCC_HCLK_Div1); 
+    RCC_PCLK2Config(RCC_HCLK_Div2); 
 
     /* PCLK1 = HCLK/2 */
-    RCC_PCLK1Config(RCC_HCLK_Div2);
+    RCC_PCLK1Config(RCC_HCLK_Div1);
     
     RCC_ADCCLKConfig(RCC_PCLK2_Div6); 
     
@@ -561,8 +588,8 @@ void TIM2_Config(void)
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
   
   /* TIM2 configuration */
-  TIM_TimeBaseStructure.TIM_Period = 1200-1;          
-  TIM_TimeBaseStructure.TIM_Prescaler = ((SystemCoreClock/1200) - 1);
+  TIM_TimeBaseStructure.TIM_Period = 24000-1;          
+  TIM_TimeBaseStructure.TIM_Prescaler = ((SystemCoreClock/120000) - 1);
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
@@ -572,7 +599,7 @@ void TIM2_Config(void)
   TIM2->EGR |=(1<<0);
 
   /* TIM2 enable counter */
-  //TIM_Cmd(TIM2, ENABLE);
+  TIM_Cmd(TIM2, ENABLE);
 }
 
 void TIM3_Config(void)
@@ -582,8 +609,8 @@ void TIM3_Config(void)
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
   
   /* TIM3 configuration */
-  TIM_TimeBaseStructure.TIM_Period = 2400-1;          
-  TIM_TimeBaseStructure.TIM_Prescaler = ((SystemCoreClock/1200) - 1);
+  TIM_TimeBaseStructure.TIM_Period = 2000-1;          
+  TIM_TimeBaseStructure.TIM_Prescaler = ((SystemCoreClock/120000) - 1);
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
@@ -594,7 +621,7 @@ void TIM3_Config(void)
   TIM3->EGR |=(1<<0);
 
   /* TIM3 enable counter */
-  //TIM_Cmd(TIM3, ENABLE);
+//  TIM_Cmd(TIM3, ENABLE);
 }
 
 
@@ -611,11 +638,6 @@ void LED_GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
   GPIO_Init(GPIOF, &GPIO_InitStructure);
-  
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
 
